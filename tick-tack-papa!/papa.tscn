@@ -4,14 +4,42 @@
 [ext_resource type="Script" uid="uid://dqnhu8e2dwaxw" path="res://papa.gd" id="1_qivgk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_anni6"]
-size = Vector2(130, 130.5)
+size = Vector2(76, 73)
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1587549764]
+[sub_resource type="Gradient" id="ExplosionGrad"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(1, 0.82, 0.25, 1, 1, 0.35, 0.08, 1, 0.3, 0.22, 0.2, 0)
+
+[node name="Papa" type="CharacterBody2D" unique_id=932198556]
 script = ExtResource("1_qivgk")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1669878160]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=227930284]
+scale = Vector2(0.6328125, 0.6328125)
 texture = ExtResource("1_3hx03")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=504523039]
-position = Vector2(1, -1.25)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=610700455]
+position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_anni6")
+
+[node name="DashTimer" type="Timer" parent="." unique_id=1100025936]
+one_shot = true
+
+[node name="ExplosionParticles" type="CPUParticles2D" parent="." unique_id=364372207]
+emitting = false
+amount = 48
+lifetime = 0.9
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 900)
+initial_velocity_min = 250.0
+initial_velocity_max = 650.0
+damping_min = 50.0
+damping_max = 150.0
+scale_amount_min = 0.05
+scale_amount_max = 0.1
+color_ramp = SubResource("ExplosionGrad")
+texture = ExtResource("1_3hx03")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1146649165]
+position_smoothing_enabled = true

@@ -1,0 +1,75 @@
+class_name ItemRecogible
+extends Area2D
+## RF-05 + RN-02: item de un solo uso. Catalogo 3.1/3.2/3.3 + trajes RF-07.
+## Tipos: hielo, aceite, mantequilla, carbon, aji, sal, misterioso,
+##        traje_criolla, traje_rustica, traje_helada, traje_picante.
+## La escena (Items/*.tscn) trae Sprite2D + CollisionShape2D + Label propios;
+## aqui SOLO se crean por codigo si faltan (para no pisar ediciones del editor).
+
+signal recogido(tipo: String, mensaje: String)
+
+@export var tipo: String = "hielo"
+var consumido: bool = false
+
+const COLORES := {
+	"hielo": Color(0.6, 0.9, 1.0),
+	"aceite": Color(1.0, 0.8, 0.2),
+	"mantequilla": Color(1.0, 0.95, 0.6),
+	"carbon": Color(0.25, 0.25, 0.25),
+	"aji": Color(1.0, 0.2, 0.1),
+	"sal": Color(0.9, 0.9, 0.9),
+	"misterioso": Color(0.8, 0.3, 0.9),
+	"traje_criolla": Color(0.95, 0.8, 0.35),
+	"traje_rustica": Color(0.45, 0.3, 0.18),
+	"traje_helada": Color(0.6, 0.85, 1.0),
+	"traje_picante": Color(0.9, 0.3, 0.15),
+}
+
+const LETRAS := {
+	"hielo": "H", "aceite": "+", "mantequilla": "»", "carbon": "!",
+	"aji": "A", "sal": "S", "misterioso": "?",
+	"traje_criolla": "T", "traje_rustica": "T",
+	"traje_helada": "T", "traje_picante": "T",
+}
+
+
+func _ready() -> void:
+	add_to_group("item")
+	if get_node_or_null("CollisionShape2D") == null:
+		var cs := CollisionShape2D.new()
+		cs.name = "CollisionShape2D"
+		var shape := CircleShape2D.new()
+		shape.radius = 20.0
+		cs.shape = shape
+		add_child(cs)
+	if get_node_or_null("Sprite2D") == null:
+		var poly := Polygon2D.new()
+		poly.name = "Sprite2D"
+		var s := 16.0
+		poly.polygon = PackedVector2Array([Vector2(-s, -s), Vector2(s, -s), Vector2(s, s), Vector2(-s, s)])
+		poly.color = COLORES.get(tipo, Color.WHITE)
+		add_child(poly)
+	else:
+		var spr := get_node_or_null("Sprite2D")
+		if spr is Sprite2D:
+			(spr as Sprite2D).modulate = COLORES.get(tipo, Color.WHITE)
+	if get_node_or_null("Label") == null:
+		var label := Label.new()
+		label.name = "Label"
+		label.text = LETRAS.get(tipo, "?")
+		label.position = Vector2(-6, -10)
+		add_child(label)
+	body_entered.connect(_on_body_entered)
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if consumido:
+		return
+	if body.is_in_group("papa") and body.has_method("aplicar_item"):
+		consumido = true # RN-02: consumo unico
+		var msg: String = str(body.call("aplicar_item", tipo))
+		recogido.emit(tipo, msg)
+		var hud := get_tree().get_first_node_in_group("hud")
+		if hud != null and hud.has_method("mostrar_mensaje"):
+			hud.call("mostrar_mensaje", msg)
+		queue_free()
