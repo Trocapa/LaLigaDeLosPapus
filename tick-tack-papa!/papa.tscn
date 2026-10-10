@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://b3v8jacaao6x2" path="res://icon.svg" id="1_3hx03"]
 [ext_resource type="Texture2D" uid="uid://d1qsqkw0i8s4p" path="res://assets/papaAnimation.png" id="1_papa"]
+[ext_resource type="Texture2D" path="res://assets/explosion.png" id="1_boom"]
+[ext_resource type="Texture2D" path="res://assets/Dust Particle.png" id="1_dust"]
 [ext_resource type="Script" uid="uid://dqnhu8e2dwaxw" path="res://papa.gd" id="1_qivgk"]
 
 [sub_resource type="AtlasTexture" id="F0"]
@@ -35,6 +37,26 @@ region = Rect2(1512, 0, 216, 274)
 [sub_resource type="AtlasTexture" id="F3"]
 atlas = ExtResource("1_papa")
 region = Rect2(648, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="E0"]
+atlas = ExtResource("1_boom")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="E1"]
+atlas = ExtResource("1_boom")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="E2"]
+atlas = ExtResource("1_boom")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="E3"]
+atlas = ExtResource("1_boom")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="E4"]
+atlas = ExtResource("1_boom")
+region = Rect2(64, 32, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SF_papa"]
 animations = [{
@@ -71,6 +93,26 @@ animations = [{
 "loop": 0,
 "name": &"saltar",
 "speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("E0")
+}, {
+"duration": 1.0,
+"texture": SubResource("E1")
+}, {
+"duration": 1.0,
+"texture": SubResource("E2")
+}, {
+"duration": 1.0,
+"texture": SubResource("E3")
+}, {
+"duration": 1.0,
+"texture": SubResource("E4")
+}],
+"loop": 0,
+"name": &"explosion",
+"speed": 10.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_anni6"]
@@ -111,6 +153,39 @@ damping_max = 150.0
 scale_amount_min = 0.05
 scale_amount_max = 0.1
 color_ramp = SubResource("ExplosionGrad")
+
+[node name="ExplosionSprite" type="AnimatedSprite2D" parent="."]
+visible = false
+scale = Vector2(2.5, 2.5)
+sprite_frames = SubResource("SF_papa")
+animation = &"explosion"
+
+[node name="PolvoPasos" type="CPUParticles2D" parent="."]
+position = Vector2(0, 30)
+emitting = false
+amount = 16
+lifetime = 0.5
+explosiveness = 0.1
+spread = 50.0
+gravity = Vector2(0, 300)
+initial_velocity_min = 20.0
+initial_velocity_max = 50.0
+scale_amount_min = 0.4
+scale_amount_max = 0.8
+color = Color(0.85, 0.8, 0.7, 1)
+texture = ExtResource("1_dust")
+
+[node name="DashParticulas" type="CPUParticles2D" parent="."]
+emitting = false
+amount = 20
+lifetime = 0.35
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 80.0
+initial_velocity_max = 160.0
+scale_amount_min = 0.5
+scale_amount_max = 1.0
+color = Color(0.7, 0.95, 1, 1)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1877477518]
 zoom = Vector2(1.7, 1.7)

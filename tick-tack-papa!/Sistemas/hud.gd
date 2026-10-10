@@ -1,113 +1,105 @@
 class_name HUDJuego
 extends CanvasLayer
-## RF-12: termometro, cuenta regresiva, tipo de papa, estado del dash.
-## RF-10: mensajes de pausa / game over / victoria. RN-04 mensajes.
-
-var termo_frame: TextureRect
-var mercurio: ColorRect
-var label_pct: Label
-var label_tiempo: Label
-var label_traje: Label
-var label_dash: Label
-var label_msg: Label
-var label_bono: Label
-var panel_fin: PanelContainer
-var label_fin: Label
-var _msg_timer: Timer
-
-# Geometria del termometro (Healthbars.png): tubo x 3-13, y 248-279.
-# Mercurio interior: x 5-11, y 250-277. Escala de dibujo 3x.
-const TERMO_REGION := Rect2(3, 248, 11, 32)
-const TERMO_ESCALA := 3.0
-const MERC_X := 5.0
-const MERC_W := 7.0
-const MERC_ABAJO := 277.0
-const MERC_ALTO_MAX := 27.0
+## RF-12: termometro de 5 niveles, cuenta regresiva, tipo de papa, dash radial.
+## RF-10 / RN-04: mensajes y teclas (pausa R/M/N/Esc) — el HUD corre en
+## modo ALWAYS para seguir recibiendo input en pausa. Nodos en UI/hud.tscn.
+## Teclas (kb_light_symbols, flechas) se iluminan al presionarlas.
 
 const BAR_VERDE := Color(0.35, 0.9, 0.35)
-const BAR_AMARILLO := Color(1.0, 0.85, 0.15)
-const BAR_ROJO := Color(1.0, 0.15, 0.1)
+const BAR_ROJO := Color(1.0, 0.35, 0.3)
+const DASH_LISTO := Color(0.2, 0.9, 0.3)
+const DASH_CARGA := Color(1.0, 0.2, 0.15)
+
+# Rellenos del termometro (Healthbars.png): 5 niveles de vida, y 252-276.
+const FILLS := [119.0, 103.0, 87.0, 71.0, 55.0] # x por nivel de vida 1..5
+# Circulo blanco del dash (Healthbars.png).
+const CIRCULO := Rect2(0, 0, 16, 16)
+
+@onready var termo_fill: TextureRect = $TermoFill
+@onready var label_pct: Label = $Pct
+@onready var label_tiempo: Label = $Tiempo
+@onready var label_traje: Label = $Traje
+@onready var dash_bar: TextureProgressBar = $DashBar
+@onready var label_bono: Label = $Bono
+@onready var label_msg: Label = $Msg
+@onready var key_izq: TextureRect = $Teclas/FilaMove/KeyIzq
+@onready var key_der: TextureRect = $Teclas/FilaMove/KeyDer
+@onready var key_salto: TextureRect = $Teclas/FilaUp/KeySalto
+@onready var key_dash: PanelContainer = $Teclas/FilaDash/KeyDash
+
+var _fills: Array[AtlasTexture] = []
+var _tecla_idle := {}
+var _tecla_puls := {}
+var _dash_bg: ImageTexture
+var _dash_rojo: ImageTexture
+var _dash_verde: ImageTexture
+var _dash_cooldown := 1.0
+var _msg_timer: Timer
 
 
-static func color_por_temp(f: float) -> Color:
-	var c := clampf(f, 0.0, 1.0)
-	if c <= 0.5:
-		return BAR_VERDE.lerp(BAR_AMARILLO, c * 2.0)
-	return BAR_AMARILLO.lerp(BAR_ROJO, (c - 0.5) * 2.0)
+static func nivel_vida(vida_pct: float) -> int:
+	## 5 = lleno-verde … 1 = casi vacio-rojo.
+	if vida_pct > 80.0:
+		return 5
+	if vida_pct > 60.0:
+		return 4
+	if vida_pct > 40.0:
+		return 3
+	if vida_pct > 20.0:
+		return 2
+	return 1
+
+
+func _atlas(path: String, region: Rect2) -> AtlasTexture:
+	var a := AtlasTexture.new()
+	a.atlas = load(path)
+	a.region = region
+	return a
+
+
+## Tiñe el circulo blanco del asset al color dado (conserva alfa).
+func _circulo_tintado(color: Color) -> ImageTexture:
+	var img := (load("res://assets/Healthbars.png") as Texture2D).get_image()
+	var c := img.get_region(Rect2i(CIRCULO))
+	c.convert(Image.FORMAT_RGBA8)
+	for y in range(c.get_height()):
+		for x in range(c.get_width()):
+			var p := c.get_pixel(x, y)
+			if p.a > 0.0:
+				c.set_pixel(x, y, Color(color.r, color.g, color.b, p.a))
+	return ImageTexture.create_from_image(c)
 
 
 func _ready() -> void:
 	add_to_group("hud")
-	# Termometro (asset Healthbars.png) arriba-izquierda + % a su derecha
-	var atlas := AtlasTexture.new()
-	atlas.atlas = load("res://assets/Healthbars.png")
-	atlas.region = TERMO_REGION
-	termo_frame = TextureRect.new()
-	termo_frame.texture = atlas
-	termo_frame.position = Vector2(16, 16)
-	termo_frame.custom_minimum_size = Vector2(11 * TERMO_ESCALA, 32 * TERMO_ESCALA)
-	termo_frame.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	termo_frame.stretch_mode = TextureRect.STRETCH_SCALE
-	add_child(termo_frame)
-	mercurio = ColorRect.new()
-	mercurio.color = BAR_VERDE
-	add_child(mercurio)
-	_actualizar_mercurio(0.0)
-
-	label_pct = Label.new()
-	label_pct.position = Vector2(58, 48)
-	label_pct.add_theme_font_size_override("font_size", 26)
-	label_pct.add_theme_constant_override("outline_size", 6)
-	label_pct.text = "0%"
-	add_child(label_pct)
-
-	label_tiempo = Label.new()
-	label_tiempo.position = Vector2(16, 120)
-	label_tiempo.add_theme_font_size_override("font_size", 26)
-	label_tiempo.add_theme_constant_override("outline_size", 6)
-	label_tiempo.text = "Tiempo: --"
-	add_child(label_tiempo)
-
-	label_traje = Label.new()
-	label_traje.position = Vector2(16, 152)
-	label_traje.add_theme_font_size_override("font_size", 18)
-	label_traje.add_theme_constant_override("outline_size", 5)
-	label_traje.text = "Papa: Rey"
-	add_child(label_traje)
-
-	label_dash = Label.new()
-	label_dash.position = Vector2(16, 178)
-	label_dash.add_theme_font_size_override("font_size", 18)
-	label_dash.add_theme_constant_override("outline_size", 5)
-	label_dash.text = "Dash: LISTO (Espacio)"
-	add_child(label_dash)
-
-	label_bono = Label.new()
-	label_bono.position = Vector2(16, 204)
-	label_bono.add_theme_font_size_override("font_size", 16)
-	label_bono.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
-	label_bono.text = ""
-	add_child(label_bono)
-
-	label_msg = Label.new()
-	label_msg.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	label_msg.position = Vector2(-300, 16)
-	label_msg.size = Vector2(600, 40)
-	label_msg.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label_msg.add_theme_font_size_override("font_size", 20)
-	label_msg.add_theme_constant_override("outline_size", 6)
-	add_child(label_msg)
-
+	for x in FILLS:
+		_fills.append(_atlas("res://assets/Healthbars.png", Rect2(x, 252, 3, 24)))
+	_tecla_idle["izq"] = _atlas("res://assets/kb_light_symbols.png", Rect2(64, 208, 16, 16))
+	_tecla_puls["izq"] = _atlas("res://assets/kb_light_symbols.png", Rect2(80, 208, 16, 16))
+	_tecla_idle["der"] = _atlas("res://assets/kb_light_symbols.png", Rect2(64, 240, 16, 16))
+	_tecla_puls["der"] = _atlas("res://assets/kb_light_symbols.png", Rect2(80, 240, 16, 16))
+	_tecla_idle["salto"] = _atlas("res://assets/kb_light_symbols.png", Rect2(64, 192, 16, 16))
+	_tecla_puls["salto"] = _atlas("res://assets/kb_light_symbols.png", Rect2(80, 192, 16, 16))
+	key_izq.texture = _tecla_idle["izq"]
+	key_der.texture = _tecla_idle["der"]
+	key_salto.texture = _tecla_idle["salto"]
+	_dash_bg = _circulo_tintado(Color(0.18, 0.18, 0.2))
+	_dash_rojo = _circulo_tintado(DASH_CARGA)
+	_dash_verde = _circulo_tintado(DASH_LISTO)
+	dash_bar.texture_under = _dash_bg
+	dash_bar.texture_progress = _dash_verde
+	dash_bar.value = 100.0
 	_msg_timer = Timer.new()
 	_msg_timer.one_shot = true
 	_msg_timer.wait_time = 3.0
 	_msg_timer.timeout.connect(func() -> void: label_msg.text = "")
 	add_child(_msg_timer)
-
+	_on_temp(0.0)
 	# Conectar papa si existe
 	await get_tree().process_frame
 	var papa := get_tree().get_first_node_in_group("papa")
 	if papa != null:
+		_dash_cooldown = float(papa.get("dash_cooldown")) if papa.get("dash_cooldown") != null else 1.0
 		if papa.has_signal("temperatura_changed"):
 			papa.connect("temperatura_changed", _on_temp)
 		if papa.has_signal("dash_changed"):
@@ -120,53 +112,61 @@ func _process(_delta: float) -> void:
 	var t := get_tree().get_first_node_in_group("nivel_timer")
 	if t is Timer:
 		label_tiempo.text = "Tiempo: %d" % int(ceil((t as Timer).time_left))
+	_actualizar_tecla(key_izq, "izq", Input.is_action_pressed("ui_left"))
+	_actualizar_tecla(key_der, "der", Input.is_action_pressed("ui_right"))
+	_actualizar_tecla(key_salto, "salto", Input.is_action_pressed("saltar"))
+	key_dash.modulate = Color(1.5, 1.5, 1.0) if Input.is_action_pressed("dash") else Color.WHITE
 
 
-func _actualizar_mercurio(v: float) -> void:
-	var f := clampf(v / 100.0, 0.0, 1.0)
-	var h := maxf(1.0, f * MERC_ALTO_MAX * TERMO_ESCALA) if f > 0.0 else 0.0
-	var abajo := 16.0 + (MERC_ABAJO - TERMO_REGION.position.y) * TERMO_ESCALA
-	mercurio.position = Vector2(16.0 + (MERC_X - TERMO_REGION.position.x) * TERMO_ESCALA, abajo - h)
-	mercurio.size = Vector2(MERC_W * TERMO_ESCALA, h)
-	mercurio.color = color_por_temp(f)
-	mercurio.visible = f > 0.0
+func _unhandled_input(event: InputEvent) -> void:
+	var nivel := get_tree().get_first_node_in_group("nivel")
+	if nivel == null:
+		return
+	if event.is_action_pressed("pausa"):
+		if nivel.has_method("alternar_pausa"):
+			nivel.call("alternar_pausa")
+		return
+	var terminado: bool = bool(nivel.get("terminado"))
+	if event.is_action_pressed("reintentar"):
+		if nivel.has_method("reintentar"):
+			nivel.call("reintentar")
+	elif event.is_action_pressed("menu"):
+		if terminado and nivel.has_method("ir_menu"):
+			nivel.call("ir_menu")
+	elif event.is_action_pressed("siguiente"):
+		if terminado and nivel.has_method("siguiente"):
+			nivel.call("siguiente")
+
+
+func _actualizar_tecla(nodo: TextureRect, cual: String, pulsada: bool) -> void:
+	var tex: AtlasTexture = _tecla_puls[cual] if pulsada else _tecla_idle[cual]
+	if nodo.texture != tex:
+		nodo.texture = tex
 
 
 func _on_temp(v: float) -> void:
-	_actualizar_mercurio(v)
-	label_pct.text = "%d%%" % int(round(v))
+	var vida := 100.0 - v
+	termo_fill.texture = _fills[nivel_vida(vida) - 1]
+	label_pct.text = "%d%%" % int(round(vida))
 	if v >= 80.0:
-		mostrar_mensaje("PELIGRO: la papa va a explotar!")
+		mostrar_mensaje("PELIGRO: la papa va a explotar!", BAR_ROJO)
 
 
 func _on_dash(listo: bool, restante: float) -> void:
-	label_dash.text = "Dash: LISTO (Espacio)" if listo else "Dash: %.1fs" % restante
+	var carga := 1.0 if listo else clampf(1.0 - restante / _dash_cooldown, 0.0, 1.0)
+	dash_bar.value = carga * 100.0
+	dash_bar.texture_progress = _dash_verde if listo else _dash_rojo
 
 
 func _on_traje(t: String) -> void:
 	label_traje.text = "Papa: " + t.capitalize()
 
 
-func mostrar_mensaje(m: String) -> void:
+func mostrar_mensaje(m: String, color: Color = Color.WHITE) -> void:
 	label_msg.text = m
+	label_msg.add_theme_color_override("font_color", color)
 	_msg_timer.start(3.0)
 
 
 func mostrar_bono_f7(activo: bool) -> void:
 	label_bono.text = "BONO F7: -30% calor +10s (2 derrotas)" if activo else ""
-
-
-func mostrar_fin(titulo: String, detalle: String) -> void:
-	if panel_fin != null:
-		panel_fin.queue_free()
-	panel_fin = PanelContainer.new()
-	panel_fin.set_anchors_preset(Control.PRESET_CENTER)
-	panel_fin.custom_minimum_size = Vector2(420, 200)
-	var vb := VBoxContainer.new()
-	panel_fin.add_child(vb)
-	label_fin = Label.new()
-	label_fin.text = titulo + "\n" + detalle + "\n[R] reintentar  [M] menu"
-	label_fin.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label_fin.add_theme_font_size_override("font_size", 20)
-	vb.add_child(label_fin)
-	add_child(panel_fin)

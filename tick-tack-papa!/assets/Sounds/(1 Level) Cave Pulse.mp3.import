@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cm4bpvgwa7wd2"
+path="res://.godot/imported/(1 Level) Cave Pulse.mp3-6a8647cbf1a3c1c8991fefa46c74b37a.mp3str"
+
+[deps]
+
+source_file="res://assets/Sounds/(1 Level) Cave Pulse.mp3"
+dest_files=["res://.godot/imported/(1 Level) Cave Pulse.mp3-6a8647cbf1a3c1c8991fefa46c74b37a.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

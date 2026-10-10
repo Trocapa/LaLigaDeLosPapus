@@ -12,6 +12,13 @@ signal recogido(tipo: String, mensaje: String)
 @export var tipo: String = "botella"
 var consumido: bool = false
 
+# Levitacion: sube y baja en bucle.
+const LEV_AMP := 6.0
+const LEV_VEL := 2.0
+var _base_y := 0.0
+var _base_ok := false
+var _fase := 0.0
+
 const COLORES := {
 	"botella": Color(0.6, 0.9, 1.0),
 	"aceite": Color(1.0, 0.8, 0.2),
@@ -43,7 +50,34 @@ func _ready() -> void:
 		poly.polygon = PackedVector2Array([Vector2(-s, -s), Vector2(s, -s), Vector2(s, s), Vector2(-s, s)])
 		poly.color = COLORES.get(tipo, Color.WHITE)
 		add_child(poly)
+	# Destellos del color del item (solo si la escena no trae particulas).
+	if get_node_or_null("ItemParticulas") == null:
+		var chispas := CPUParticles2D.new()
+		chispas.name = "ItemParticulas"
+		chispas.amount = 10
+		chispas.lifetime = 1.2
+		chispas.preprocess = 1.2
+		chispas.spread = 180.0
+		chispas.gravity = Vector2(0, -20)
+		chispas.initial_velocity_min = 10.0
+		chispas.initial_velocity_max = 25.0
+		chispas.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+		chispas.emission_sphere_radius = 14.0
+		chispas.scale_amount_min = 2.0
+		chispas.scale_amount_max = 4.0
+		chispas.color = COLORES.get(tipo, Color.WHITE)
+		add_child(chispas)
+	_fase = randf() * TAU
 	body_entered.connect(_on_body_entered)
+
+
+func _process(_delta: float) -> void:
+	if consumido:
+		return
+	if not _base_ok:
+		_base_y = position.y
+		_base_ok = true
+	position.y = _base_y + sin(Time.get_ticks_msec() / 1000.0 * LEV_VEL + _fase) * LEV_AMP
 
 
 func _on_body_entered(body: Node2D) -> void:
@@ -55,5 +89,10 @@ func _on_body_entered(body: Node2D) -> void:
 		recogido.emit(tipo, msg)
 		var hud := get_tree().get_first_node_in_group("hud")
 		if hud != null and hud.has_method("mostrar_mensaje"):
-			hud.call("mostrar_mensaje", msg)
+			# Verde si el efecto es positivo, rojo si es negativo.
+			var bueno := tipo in ["botella", "aceite", "mantequilla"] \
+				or tipo.begins_with("traje_") \
+				or (tipo == "misterioso" and "TOTAL" in msg)
+			hud.call("mostrar_mensaje", msg,
+				Color(0.4, 1.0, 0.4) if bueno else Color(1.0, 0.35, 0.3))
 		queue_free()

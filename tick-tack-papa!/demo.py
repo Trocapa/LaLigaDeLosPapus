@@ -15,7 +15,7 @@ TRAJES = {
 class Papa:
     def __init__(self, nivel=1, traje="rey", bono_f7=False):
         self.temp = 0.0; self.viva = True; self.traje = traje
-        self.nivel = nivel; self.bono = bono_f7
+        self.nivel = nivel; self.bono = bono_f7; self.causa = ""
         self.freeze = 0.0; self.butter = 0.0; self.chili = 0.0
         self.sal = 0.0; self.invert = 0.0
         self.dash_cd = 0.0
@@ -46,6 +46,8 @@ class Papa:
     def dash(self):
         if self.dash_cd<=0: self.dash_cd=1.0; return True
         return False
+    def explotar(self, causa):
+        self.causa=causa; self.viva=False
     def jump(self): return TRAJES[self.traje]["jump"]*(0.75 if self.sal>0 else 1.0)
     def speed(self): return TRAJES[self.traje]["speed"]*(1.3 if self.butter>0 else 1.0)
 
@@ -107,20 +109,37 @@ c=Counter(elegir(2,rng) for _ in range(2000))
 ok("sal" in c and c["sal"]/2000>0.1, f"RN-06 N2 incluye sal ~20% (sal={c['sal']/20:.1f}%)")
 c3=Counter(elegir(3,rng) for _ in range(2000))
 ok("misterioso" in c3 and "carbon" in c3, "RN-06 N3 introduce ? y carbon")
-# Tinte papa (papa.gd _actualizar_tinte): base -> amarillo (50%) -> rojo (60% mezcla)
+# Tinte papa: color original hasta 35%, de ahi a rojo (mezcla 60%)
 def lerp(a,b,f): return tuple(x+(y-x)*f for x,y in zip(a,b))
-BASE=(0.72,0.53,0.26); AMARILLO=(1.0,0.85,0.15); ROJO=(1.0,0.12,0.08)
+BASE=(0.72,0.53,0.26); ROJO=(1.0,0.12,0.08)
 def tinte(f):
     f=max(0.0,min(1.0,f))
-    if f<=0.5: return lerp(BASE,AMARILLO,(f*2.0)*0.5)
-    return lerp(lerp(BASE,AMARILLO,0.5),ROJO,(f-0.5)*2.0*0.6)
-ok(tinte(0.0)==BASE, "tinte 0%: color normal del disfraz")
-c50=tinte(0.5); ok(abs(c50[0]-0.86)<0.02 and abs(c50[1]-0.69)<0.02, f"tinte 50%: amarillento {tuple(round(v,2) for v in c50)}")
+    if f<=0.35: return BASE
+    return lerp(BASE,ROJO,(f-0.35)/0.65*0.6)
+ok(tinte(0.0)==BASE and tinte(0.3)==BASE, "tinte 0-35%: color original del disfraz")
+c50=tinte(0.5); ok(abs(c50[0]-0.76)<0.02 and abs(c50[1]-0.47)<0.02, f"tinte 50% enrojeciendo {tuple(round(v,2) for v in c50)}")
 c100=tinte(1.0); ok(c100[1]>ROJO[1]+0.15, f"tinte 100%: rojo sin tapar disfraz {tuple(round(v,2) for v in c100)}")
+# Dash radial: carga = 1 - restante/cooldown (listo = 1.0)
+def carga(listo,rest,cd=1.0): return 1.0 if listo else max(0.0,min(1.0,1.0-rest/cd))
+ok(carga(True,0.0)==1.0 and abs(carga(False,0.5)-0.5)<1e-9 and carga(False,1.0)==0.0, "dash carga/descarga segun tiempos")
 # Barra HUD (hud.gd color_por_temp): verde -> amarillo -> rojo
 def barra(f):
     V=(0.35,0.9,0.35); A=(1.0,0.85,0.15); R=(1.0,0.15,0.1)
     return lerp(V,A,f*2.0) if f<=0.5 else lerp(A,R,(f-0.5)*2.0)
 def cerca(a,b): return all(abs(x-y)<1e-9 for x,y in zip(a,b))
 ok(cerca(barra(0.0),(0.35,0.9,0.35)) and cerca(barra(0.5),(1.0,0.85,0.15)) and cerca(barra(1.0),(1.0,0.15,0.1)), "barra HUD verde->amarillo->rojo")
+# Barra de vida 5 niveles (hud.gd nivel_vida): vida = 100 - temp
+def nivel_vida(v):
+    if v>80: return 5
+    if v>60: return 4
+    if v>40: return 3
+    if v>20: return 2
+    return 1
+ok([nivel_vida(v) for v in (95,70,50,30,5)]==[5,4,3,2,1], "vida 5 niveles verde->rojo")
+p=Papa(); p.temp=30.0; ok(nivel_vida(100.0-p.temp)==4, "vida 70% = nivel 4")
+# Timeout y caida tambien explotan (nivel_base)
+p=Papa(); p.explotar("Tiempo agotado (F4)"); ok(not p.viva and p.causa=="Tiempo agotado (F4)", "timeout explota con causa")
+p=Papa(); y=750.0
+if y>700.0: p.explotar("Caida al vacio")
+ok(not p.viva and p.causa=="Caida al vacio", "caida (y>700) mata y reinicia")
 print("== DEMO OK: F1-F7 + RF-01..RF-15 verificados ==")

@@ -37,15 +37,17 @@ var saltos_extra: int = 0
 @onready var dash_timer: Timer = $DashTimer
 @onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var explosion_particles: CPUParticles2D = $ExplosionParticles
+@onready var explosion_sprite: AnimatedSprite2D = $ExplosionSprite
+@onready var polvo_pasos: CPUParticles2D = $PolvoPasos
+@onready var dash_particulas: CPUParticles2D = $DashParticulas
 
 var _cooldown_timer: Timer
 var _efecto_tick: float = 0.0
 
-# Tinte por calor (visual): verde del traje -> amarillo -> rojo con la
-# temperatura. La mezcla con rojo llega al 60% para que el disfraz se siga notando.
-const TINTE_AMARILLO := Color(1.0, 0.85, 0.15)
+# Tinte por calor: color original del traje hasta ~35% y de ahi a rojo.
+# La mezcla con rojo llega al 60% para que el disfraz se siga notando.
 const TINTE_ROJO := Color(1.0, 0.12, 0.08)
-const TINTE_AMARILLO_MAX := 0.5
+const TINTE_INICIO := 0.35
 const TINTE_ROJO_MAX := 0.6
 var _color_base: Color = Color.WHITE
 
@@ -102,7 +104,7 @@ func _physics_process(delta: float) -> void:
 	_actualizar_efectos(delta)
 	_actualizar_temperatura(delta)
 	if temperatura >= 100.0:
-		_explotar("Sobrecalentamiento al 100% (F1)")
+		explotar("Sobrecalentamiento al 100% (F1)")
 		return
 	var direction := Input.get_axis("ui_left", "ui_right")
 	if controles_invertidos_restante > 0.0:
@@ -141,20 +143,26 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 
 
-## Sprite 4 de la tira = salto; resto = caminar.
+## Sprite 4 de la tira = salto; resto = caminar. Polvo al caminar en suelo.
 func _actualizar_animacion(direction: float) -> void:
 	if anim == null:
 		return
-	if not is_on_floor():
+	var en_suelo := is_on_floor()
+	var moviendose: bool = direction != 0.0 or abs(velocity.x) > 20.0
+	if not en_suelo:
 		if anim.animation != "saltar":
 			anim.play("saltar")
-	elif direction != 0.0 or abs(velocity.x) > 20.0:
+	elif moviendose:
 		if anim.animation != "caminar" or not anim.is_playing():
 			anim.play("caminar")
 		anim.flip_h = last_facing_dir < 0.0
 	else:
 		anim.stop()
 		anim.frame = 0
+	if polvo_pasos != null:
+		polvo_pasos.emitting = viva and en_suelo and moviendose and not is_dashing
+	if dash_particulas != null:
+		dash_particulas.emitting = viva and is_dashing
 
 
 func _actualizar_temperatura(delta: float) -> void:
@@ -244,7 +252,7 @@ func aplicar_item(tipo: String) -> String:
 			temperatura = clampf(temperatura + 20.0, 0.0, 100.0)
 			temperatura_changed.emit(temperatura)
 			if temperatura >= 100.0:
-				_explotar("Carbon incandescente (+20%)")
+				explotar("Carbon incandescente (+20%)")
 			return "Carbon: +20% calor"
 		"aji":
 			chili_restante = 5.0
@@ -291,16 +299,15 @@ func _aplicar_color_traje() -> void:
 	_actualizar_tinte()
 
 
-## 0% = color del traje, 50% = amarillento, 100% = rojo (sin tapar el disfraz).
+## 0-35% = color original del traje; de ahi a 100% = rojo (sin tapar el disfraz).
 func _actualizar_tinte() -> void:
 	if anim == null:
 		return
 	var f := clampf(temperatura / 100.0, 0.0, 1.0)
-	if f <= 0.5:
-		anim.modulate = _color_base.lerp(TINTE_AMARILLO, (f * 2.0) * TINTE_AMARILLO_MAX)
+	if f <= TINTE_INICIO:
+		anim.modulate = _color_base
 	else:
-		var medio := _color_base.lerp(TINTE_AMARILLO, TINTE_AMARILLO_MAX)
-		anim.modulate = medio.lerp(TINTE_ROJO, (f - 0.5) * 2.0 * TINTE_ROJO_MAX)
+		anim.modulate = _color_base.lerp(TINTE_ROJO, (f - TINTE_INICIO) / (1.0 - TINTE_INICIO) * TINTE_ROJO_MAX)
 
 
 func pincho_tocado(mortal: bool) -> void:
@@ -309,22 +316,25 @@ func pincho_tocado(mortal: bool) -> void:
 	if bool(stats()["inmune_pinchos"]) and not mortal:
 		return
 	if mortal:
-		_explotar("Trampa mortal")
+		explotar("Trampa mortal")
 	else:
 		temperatura = clampf(temperatura + 15.0, 0.0, 100.0)
 		temperatura_changed.emit(temperatura)
 		if temperatura >= 100.0:
-			_explotar("Pinchos (+15%) -> 100%")
+			explotar("Pinchos (+15%) -> 100%")
 
 
-func _explotar(causa: String) -> void:
+func explotar(causa: String) -> void:
 	if not viva:
 		return
 	viva = false
 	velocity = Vector2.ZERO
-	# Explosion visual: oculta la papa y lanza particulas de pure
+	# Explosion visual: oculta la papa, asset de explosion + particulas de pure
 	if anim != null:
 		anim.visible = false
+	if explosion_sprite != null:
+		explosion_sprite.visible = true
+		explosion_sprite.play("explosion")
 	if explosion_particles != null:
 		explosion_particles.restart()
 	murio.emit(causa)

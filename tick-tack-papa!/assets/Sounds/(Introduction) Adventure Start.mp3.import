@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bfg5p81fstcc0"
+path="res://.godot/imported/(Introduction) Adventure Start.mp3-ce2ff6007e6d44c7cb5c3ffe740a7ac4.mp3str"
+
+[deps]
+
+source_file="res://assets/Sounds/(Introduction) Adventure Start.mp3"
+dest_files=["res://.godot/imported/(Introduction) Adventure Start.mp3-ce2ff6007e6d44c7cb5c3ffe740a7ac4.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

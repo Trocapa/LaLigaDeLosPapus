@@ -20,11 +20,6 @@ func _ready() -> void:
 	add_child(cs)
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
-	# Marca visual pequena (rombo gris) para ubicar el cartel en el editor/juego
-	var marca := Polygon2D.new()
-	marca.polygon = PackedVector2Array([Vector2(0, -10), Vector2(8, 0), Vector2(0, 10), Vector2(-8, 0)])
-	marca.color = Color(0.75, 0.75, 0.8)
-	add_child(marca)
 	_panel = Panel.new()
 	_panel.position = Vector2(-140, -120)
 	_panel.size = Vector2(280, 60)

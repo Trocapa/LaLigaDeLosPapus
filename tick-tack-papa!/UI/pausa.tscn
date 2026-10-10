@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://UI/pausa.gd" id="1_pausa"]
+[ext_resource type="Texture2D" path="res://assets/Restart.png" id="1_reset"]
+[ext_resource type="Texture2D" path="res://assets/Back.png" id="1_back"]
+[ext_resource type="AudioStream" path="res://assets/Sounds/(4 Level) Frozen Cavern.mp3" id="1_mus"]
+
+[node name="Pausa" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pausa")
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="Titulo" type="Label" parent="Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 44
+text = "PAUSA"
+horizontal_alignment = 1
+
+[node name="FilaBotones" type="HBoxContainer" parent="Center/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BtnReset" type="Button" parent="Center/VBox/FilaBotones"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+icon = ExtResource("1_reset")
+expand_icon = true
+
+[node name="BtnBack" type="Button" parent="Center/VBox/FilaBotones"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+icon = ExtResource("1_back")
+expand_icon = true
+
+[node name="Ayuda" type="Label" parent="Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 20
+text = "[ESC] continuar  [R] reintentar"
+horizontal_alignment = 1
+
+[node name="MusicaPausa" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("1_mus")
+autoplay = true

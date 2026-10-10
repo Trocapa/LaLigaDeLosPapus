@@ -86,3 +86,50 @@ Todo cambio de lógica o arquitectura queda registrado aquí.
 - `hud.gd`: ProgressBar -> termometro del `assets/Healthbars.png` (marco
   azul + columna de mercurio con rampa verde->amarillo->rojo) y % a la derecha.
 - `project.godot`: filtro de texturas canvas a Nearest (pixel-art nitido).
+
+## 2026-10-10 — Game over escena, timer visible, vida 5 niveles, teclas, caida, explosion y musica
+- `UI/game_over.tscn` + `game_over.gd`: menu de derrota/victoria por nodos
+  (Titulo/Detalle/Ayuda editables); `nivel_base` la instancia y llama a
+  `mostrar()`. Se elimino el panel construido por codigo del HUD.
+- Timer por nivel: nodo `NivelTimer` real en Nivel1 (90 s) y Nivel2 (75 s),
+  reutilizado por `NivelBase` (aplica tiempo y bono F7). Al acabarse llama a
+  `papa.explotar("Tiempo agotado (F4)")` (antes solo panel): explota con
+  particulas + asset. `_explotar` paso a publica `explotar`.
+- Barra de vida: termometro con 5 rellenos de Healthbars.png por quintiles de
+  VIDA (100-temp): 5 lleno-verde … 1 punta-roja; % muestra vida restante.
+  Nodos del HUD en `UI/hud.tscn` (TermoFrame/Fill, Pct, Tiempo, Traje, Dash,
+  Bono, Msg, Teclas) instanciada por el generador de niveles.
+- Teclas `kb_light_symbols` (flechas filas 12-15, normal col 4 / pulsada col 5)
+  abajo-izquierda con su accion; ESPACIO como keycap de texto. Se iluminan con
+  Input (ui_left/ui_right/saltar/dash).
+- Efectos en rojo (carbon, aji, sal, misterioso malo) o verde (botella, aceite,
+  mantequilla, trajes, misterioso bueno) via `mostrar_mensaje(msg, color)`.
+- Caida: `limite_caida_y = 700` en NivelBase; al pasar explota y reinicia.
+- Explosion: `ExplosionSprite` (AnimatedSprite2D, 5 frames de explosion.png
+  32px a 10 fps, escala 2.5) ademas de las particulas.
+- Musica: menu `(main) Cozy Game Over`, N1 `(1 Level) Cave Pulse`,
+  N2 `(2 Level) Frozen Cavern Arpeggios` (AudioStreamPlayer autoplay).
+- Demo: 34 checks (+vida 5 niveles, timeout y caida con causa).
+
+## 2026-10-10 — Game over visible, pausa, botones, dust, dash radial, tinte y musica
+- BUG pantalla de muerte: el panel bajo Node2D quedaba en tamano (0,0)
+  (probado con sonda: size=(0,0)). Ahora game over y pausa se agregan bajo el
+  CanvasLayer del HUD (sonda: size=viewport, visible). `build_niveles.gd`
+  marcado NO EJECUTAR: los niveles solo se tocan con edicion quirurgica.
+- Carteles: fuera los rombos grises (pinchos se conservan).
+- `Restart.png` movido de Sounds/ a assets/ y usado como icono de reset.
+- Menu JUGAR con icono Play.png; game over y pausa con botones Reset/Back
+  (iconos + R/M/Esc/ clic). Pausa es escena propia `UI/pausa.tscn` con musica.
+- `papa.tscn`: PolvoPasos (Dust Particle al caminar en suelo) y
+  DashParticulas (estela cyan en dash), controlados en `_actualizar_animacion`.
+- Tinte: color original hasta 35% y de ahi a rojo (mezcla max 60%).
+- Musica: N1 <- track 2, N2 <- track 3, game over <- track 1 (Cave Pulse),
+  pausa <- track 4 (Frozen Cavern); nodos renombrados MusicaNivel1/2,
+  MusicaGameOver/MusicaPausa + grupo musica_nivel (parar/congelar al morir/pausar).
+- Teclas: flecha arriba centrada sobre izq/der; ESPACIO rectangular (140px)
+  debajo; HUD en modo ALWAYS y maneja pausa/R/M/N (el nivel ya no, para poder
+  despausar con Esc).
+- Dash radial abajo-centro (TextureProgressBar, circulo blanco de Healthbars
+  tenhido en codigo: fondo oscuro, rojo cargando, verde listo) + caption DASH.
+- Items: levitacion sinusoidal + destellos CPUParticles2D de su color.
+- Demo: 36 checks (+tinte por tramos y carga de dash).
