@@ -6,7 +6,7 @@ const DATOS := {
 	"rey": {
 		"nombre": "Rey Papa (Base)",
 		"speed": 300.0,
-		"jump": -550.0,
+		"jump": -600.0,
 		"heat_mult": 1.0,
 		"dash_mult": 1.0,
 		"inmune_pinchos": false,
@@ -18,7 +18,7 @@ const DATOS := {
 	"criolla": {
 		"nombre": "Papa Criolla",
 		"speed": 390.0, # +30%
-		"jump": -550.0,
+		"jump": -600.0,
 		"heat_mult": 1.5, # se quema 1.5x mas rapido
 		"dash_mult": 1.6,
 		"inmune_pinchos": false,
@@ -30,7 +30,7 @@ const DATOS := {
 	"rustica": {
 		"nombre": "Papa Rustica (Piel Dura)",
 		"speed": 300.0,
-		"jump": -440.0, # -20% salto
+		"jump": -480.0, # -20% salto
 		"heat_mult": 1.0,
 		"dash_mult": 1.0,
 		"inmune_pinchos": true,
@@ -42,7 +42,7 @@ const DATOS := {
 	"helada": {
 		"nombre": "Papa Helada",
 		"speed": 300.0,
-		"jump": -550.0,
+		"jump": -600.0,
 		"heat_mult": 0.5, # mitad de calor
 		"dash_mult": 1.0,
 		"inmune_pinchos": false,
@@ -54,7 +54,7 @@ const DATOS := {
 	"picante": {
 		"nombre": "Papa Picante / Frita",
 		"speed": 340.0,
-		"jump": -550.0,
+		"jump": -600.0,
 		"heat_mult": 1.2,
 		"dash_mult": 1.2,
 		"inmune_pinchos": false,

@@ -12,6 +12,14 @@ signal recogido(tipo: String, mensaje: String)
 @export var tipo: String = "botella"
 var consumido: bool = false
 
+# Numero que vuela al termometro al recoger.
+const VALORES := {
+	"botella": "-20%", "aceite": "+5s", "mantequilla": "+30%",
+	"carbon": "+20%", "aji": "2x!", "sal": "-25%",
+	"misterioso": "?", "traje_criolla": "+TRAJE", "traje_rustica": "+TRAJE",
+	"traje_helada": "+TRAJE", "traje_picante": "+TRAJE",
+}
+
 # Levitacion: sube y baja en bucle.
 const LEV_AMP := 6.0
 const LEV_VEL := 2.0
@@ -89,11 +97,10 @@ func _on_body_entered(body: Node2D) -> void:
 		Sfx.suena(self, "SFX_Item.mp3")
 		recogido.emit(tipo, msg)
 		var hud := get_tree().get_first_node_in_group("hud")
-		if hud != null and hud.has_method("mostrar_mensaje"):
+		if hud != null and hud.has_method("mostrar_efecto"):
 			# Verde si el efecto es positivo, rojo si es negativo.
 			var bueno := tipo in ["botella", "aceite", "mantequilla"] \
 				or tipo.begins_with("traje_") \
 				or (tipo == "misterioso" and "TOTAL" in msg)
-			hud.call("mostrar_mensaje", msg,
-				Color(0.4, 1.0, 0.4) if bueno else Color(1.0, 0.35, 0.3))
+			hud.call("mostrar_efecto", VALORES.get(tipo, "?"), bueno)
 		queue_free()

@@ -5,11 +5,11 @@ import random
 
 BASE_HEAT = 4.0  # %/s (trajes.gd BASE_HEAT_POR_SEG)
 TRAJES = {
-    "rey":      {"speed": 300.0, "jump": -550.0, "heat_mult": 1.0},
-    "criolla":  {"speed": 390.0, "jump": -550.0, "heat_mult": 1.5},
-    "rustica":  {"speed": 300.0, "jump": -440.0, "heat_mult": 1.0, "inmune": True},
-    "helada":   {"speed": 300.0, "jump": -550.0, "heat_mult": 0.5},
-    "picante":  {"speed": 340.0, "jump": -550.0, "heat_mult": 1.2, "doble_salto": True},
+    "rey":      {"speed": 300.0, "jump": -600.0, "heat_mult": 1.0},
+    "criolla":  {"speed": 390.0, "jump": -600.0, "heat_mult": 1.5},
+    "rustica":  {"speed": 300.0, "jump": -480.0, "heat_mult": 1.0, "inmune": True},
+    "helada":   {"speed": 300.0, "jump": -600.0, "heat_mult": 0.5},
+    "picante":  {"speed": 340.0, "jump": -600.0, "heat_mult": 1.2, "doble_salto": True},
 }
 
 class Papa:
@@ -80,20 +80,20 @@ p=Papa(); p.temp=60.0; p.chili=5.0; p.agua(); ok(p.temp==30.0 and p.chili==0, f"
 # RF-04/F6 dash
 p=Papa(); ok(p.dash() and not p.dash(), "RF-04/F6 dash con cooldown 1s")
 p.tick(1.0); ok(p.dash(), "dash listo tras cooldown (HUD RF-12)")
-ok(abs(Papa().speed()-300.0)<1e-6 and abs(Papa().jump()+550.0)<1e-6, "RF-04 movimiento base 300/-550")
+ok(abs(Papa().speed()-300.0)<1e-6 and abs(Papa().jump()+600.0)<1e-6, "RF-04 movimiento base 300/-600")
 # RF-05 catalogo
 p=Papa(); p.temp=50.0; p.item("botella",random); ok(p.temp==30.0, "botella -20% calor")
 p=Papa(); extra=p.item("aceite",random); ok(extra==5.0, "aceite +5s")
 p=Papa(); p.item("mantequilla",random); ok(abs(p.speed()-390.0)<1e-6, f"mantequilla +30% vel ({p.speed()})")
 p=Papa(); p.item("carbon",random); ok(p.temp==20.0, "carbon +20%")
 p=Papa(); p.item("aji",random); ok(p.chili==5.0 and abs(p.heat()-8.0)<1e-6, "aji 2x calor 5s")
-p=Papa(); p.item("sal",random); ok(p.jump()==-412.5, "sal -25% salto 3s")
+p=Papa(); p.item("sal",random); ok(p.jump()==-450.0, "sal -25% salto 3s")
 rng=random.Random(1); vistos=set()
 for _ in range(200):
     q=Papa(); q.item("misterioso",rng); vistos.add("frio" if q.temp==0.0 else "caliente")
 ok(vistos=={"frio","caliente"}, f"misterioso 50/50 ambas ramas {vistos}")
 # RF-07 trajes extras
-ok(TRAJES["rustica"]["jump"]==-440.0 and TRAJES["rustica"].get("inmune"), "rustica salto -20% + inmune pinchos")
+ok(TRAJES["rustica"]["jump"]==-480.0 and TRAJES["rustica"].get("inmune"), "rustica salto -20% + inmune pinchos")
 ok(TRAJES["picante"].get("doble_salto"), "picante doble salto")
 p=Papa(traje="picante"); p.agua(); ok(p.traje=="rey", "RF-08 picante pierde traje con agua")
 # RF-06/F7 bono
@@ -139,7 +139,7 @@ ok([nivel_vida(v) for v in (95,70,50,30,5)]==[5,4,3,2,1], "vida 5 niveles verde-
 p=Papa(); p.temp=30.0; ok(nivel_vida(100.0-p.temp)==4, "vida 70% = nivel 4")
 # Timeout y caida tambien explotan (nivel_base)
 p=Papa(); p.explotar("Tiempo agotado (F4)"); ok(not p.viva and p.causa=="Tiempo agotado (F4)", "timeout explota con causa")
-p=Papa(); y=750.0
-if y>700.0: p.explotar("Caida al vacio")
-ok(not p.viva and p.causa=="Caida al vacio", "caida (y>700) mata y reinicia")
+p=Papa(); y=800.0
+if y>750.0: p.explotar("Caida al vacio")
+ok(not p.viva and p.causa=="Caida al vacio", "caida (y>750) mata y reinicia")
 print("== DEMO OK: F1-F7 + RF-01..RF-15 verificados ==")

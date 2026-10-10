@@ -6,7 +6,7 @@ extends Node2D
 @export var nivel_num: int = 1
 @export var tiempo_limite: float = 60.0
 @export var siguiente_escena: String = ""
-@export var limite_caida_y: float = 700.0 ## caerse mas abajo = muerte
+@export var limite_caida_y: float = 750.0 ## caerse mas abajo = muerte
 
 const GAME_OVER_SCENE := "res://UI/game_over.tscn"
 const PAUSA_SCENE := "res://UI/pausa.tscn"
@@ -130,6 +130,7 @@ func completar_nivel() -> void:
 	if hud != null and hud.has_method("mostrar_mensaje"):
 		hud.call("mostrar_mensaje", "NIVEL COMPLETADO!", Color(0.4, 1.0, 0.4))
 	Sfx.suena(self, "CambiarLevel.mp3")
+	get_tree().call_group("musica_nivel", "stop")
 	if siguiente_escena != "" and ResourceLoader.exists(siguiente_escena):
 		# Pausa breve + cierre circular a negro (lo anima el HUD en ALWAYS).
 		get_tree().paused = true

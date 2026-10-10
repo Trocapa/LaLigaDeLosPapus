@@ -157,3 +157,23 @@ Todo cambio de lógica o arquitectura queda registrado aquí.
 - Canciones renombradas por uso: menu/nivel1/nivel2/gameover/pausa/
   introduccion.mp3 (level4/level5 intactos); 5 referencias actualizadas.
 - Demo: 38 checks (+tinte blanco y carga de dash).
+
+## 2026-10-10 — Musica por uso, caer, replica N1, mirroring, numeros voladores, Pixelite
+- REGLA DURA: N1/N2 solo edicion quirurgica (verificado: items/meta intactos).
+- Musica N1 <-> N3: N1 <- introduccion.mp3, N3 <- nivel1.mp3.
+- Caida: nueva anim `caer` = sprite 2 de papaAnimation (F1); en aire se usa
+  `saltar` subiendo y `caer` bajando. Salto -550 -> -600 (rustica -480).
+- Tiles: sonda revelo Terreno de N1 a escala 3 con layout propio (suelo
+  filas 8-11 + franja roja + esquinas). Replica exacta (tile_data + escala)
+  a N2-N5 via script temporal. Pinchos de codigo bajados a y=374 (techo 384).
+- Parallax: `motion_mirroring` = ancho del arte en TODAS las capas de los 5
+  niveles (N1/N2 por edicion, N3-5 regenerados). Sonda: 0 texturas vacias.
+- Victoria: se detiene musica_nivel (no sigue sonando en transicion).
+- Zona de muerte por caida 700 -> 750.
+- Efectos: `hud.mostrar_efecto(valor, bueno)` — numero con rebote que vuela
+  al termometro y se suma/resta; items ya no usan mensaje (sistema intacto).
+- Dash particulas 0.5-1.0 -> 1.2-2.0.
+- Fuente: `assets/fonts/Pixelite.tres` (SystemFont "Pixelite", instalada en
+  el PC) como `gui/theme/default_font` para todos los textos. Nota: .FON no
+  lo importa Godot; funciona porque esta instalada en Windows.
+- Demo: 40 checks (+caida 750). Sondas temporales borradas.

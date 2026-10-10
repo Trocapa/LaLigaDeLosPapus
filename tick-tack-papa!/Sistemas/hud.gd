@@ -177,6 +177,26 @@ func mostrar_bono_f7(activo: bool) -> void:
 	label_bono.text = "BONO F7: -30% calor +10s (2 derrotas)" if activo else ""
 
 
+## Numero del efecto: rebota en pantalla y vuela al termometro (32,64),
+## sumando o restando segun el signo. Verde = positivo, rojo = negativo.
+func mostrar_efecto(texto: String, bueno: bool) -> void:
+	var l := Label.new()
+	l.text = texto
+	l.add_theme_font_size_override("font_size", 34)
+	l.add_theme_constant_override("outline_size", 8)
+	l.add_theme_color_override("font_color",
+		Color(0.4, 1.0, 0.4) if bueno else Color(1.0, 0.35, 0.3))
+	l.position = Vector2(590, 330)
+	add_child(l)
+	var tw := create_tween()
+	tw.tween_property(l, "position", Vector2(640, 290), 0.25)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(l, "position", Vector2(32, 64), 0.7)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(l, "modulate:a", 0.0, 0.7)
+	tw.tween_callback(l.queue_free)
+
+
 ## Cierre circular a negro y avance de nivel (el arbol esta pausado;
 ## el HUD corre en ALWAYS y anima el shader).
 func iniciar_transicion(duracion: float, nivel: Node) -> void:

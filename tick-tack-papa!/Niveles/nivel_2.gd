@@ -19,6 +19,6 @@ func _crear_contenido() -> void:
 	c.set("texto", "NIVEL 2: cuidado con los pinchos\nLa RUSTICA (Items/TrajeRustica) es inmune a los leves")
 	add_child(c)
 	var p: Area2D = PinchosS.new()
-	p.position = Vector2(1100, 300)
+	p.position = Vector2(1100, 374)
 	p.set("mortal", false)
 	add_child(p)

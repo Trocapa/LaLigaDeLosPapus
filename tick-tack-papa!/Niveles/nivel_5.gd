@@ -16,7 +16,7 @@ func _crear_contenido() -> void:
 	c.position = Vector2(442, 120)
 	c.set("texto", "NIVEL FINAL: la Fuente Sagrada esta cerca\n60 segundos. Sin piedad.")
 	add_child(c)
-	for d in [[700.0, 390.0], [1100.0, 294.0]]:
+	for d in [[700.0, 374.0], [1100.0, 374.0]]:
 		var p: Area2D = PinchosS.new()
 		p.position = Vector2(d[0], d[1])
 		p.set("mortal", false)

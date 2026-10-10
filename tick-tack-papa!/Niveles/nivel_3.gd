@@ -17,6 +17,6 @@ func _crear_contenido() -> void:
 	c.set("texto", "NIVEL 3: de noche hace mas frio... o no?\nBusca la botella (Items/ItemBotella) si te acaloras")
 	add_child(c)
 	var p: Area2D = PinchosS.new()
-	p.position = Vector2(700, 390)
+	p.position = Vector2(700, 374)
 	p.set("mortal", false)
 	add_child(p)

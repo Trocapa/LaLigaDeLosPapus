@@ -14,32 +14,33 @@ const T_PASTO := Vector2i(7, 0)
 const T_TIERRA := Vector2i(7, 1)
 
 const FONDO_N3 := [
-	["res://assets/parallax/nigth/nigth__sky.png", 0.0],
-	["res://assets/parallax/nigth/nigth_back.png", 0.25],
-	["res://assets/parallax/nigth/nigth_mid.png", 0.5],
-	["res://assets/parallax/nigth/nigth_front.png", 0.75],
-	["res://assets/parallax/nigth/nigth_floor.png", 1.0],
+	["res://assets/parallax/nigth/nigth__sky.png", 0.0, 1900.0],
+	["res://assets/parallax/nigth/nigth_back.png", 0.25, 3800.0],
+	["res://assets/parallax/nigth/nigth_mid.png", 0.5, 3800.0],
+	["res://assets/parallax/nigth/nigth_front.png", 0.75, 3800.0],
+	["res://assets/parallax/nigth/nigth_floor.png", 1.0, 1900.0],
 ]
 const FONDO_N4 := [
-	["res://assets/parallax/forest/forest_sky.png", 0.0],
-	["res://assets/parallax/forest/forest_moon.png", 0.0],
-	["res://assets/parallax/forest/forest_mountain.png", 0.15],
-	["res://assets/parallax/forest/forest_back.png", 0.35],
-	["res://assets/parallax/forest/forest_mid.png", 0.55],
-	["res://assets/parallax/forest/forest_short.png", 0.75],
-	["res://assets/parallax/forest/forest_long.png", 0.9],
+	["res://assets/parallax/forest/forest_sky.png", 0.0, 1900.0],
+	["res://assets/parallax/forest/forest_moon.png", 0.0, 3800.0],
+	["res://assets/parallax/forest/forest_mountain.png", 0.15, 3800.0],
+	["res://assets/parallax/forest/forest_back.png", 0.35, 3800.0],
+	["res://assets/parallax/forest/forest_mid.png", 0.55, 3800.0],
+	["res://assets/parallax/forest/forest_short.png", 0.75, 3800.0],
+	["res://assets/parallax/forest/forest_long.png", 0.9, 3800.0],
 ]
 const FONDO_N5 := [
-	["res://assets/parallax/skies/Sky_sky.png", 0.0],
-	["res://assets/parallax/skies/sky_moon.png", 0.0],
-	["res://assets/parallax/skies/sky_clouds.png", 0.1],
-	["res://assets/parallax/skies/Sky_cloud_single.png", 0.2],
-	["res://assets/parallax/skies/Sky_back_mountain.png", 0.25],
-	["res://assets/parallax/skies/sky_front_mountain.png", 0.4],
-	["res://assets/parallax/skies/Sky_front_cloud.png", 0.55],
-	["res://assets/parallax/skies/sky_cloud_floor.png", 0.75],
-	["res://assets/parallax/skies/sky_cloud_floor_2.png", 0.9],
+	["res://assets/parallax/skies/Sky_sky.png", 0.0, 1900.0],
+	["res://assets/parallax/skies/sky_moon.png", 0.0, 3800.0],
+	["res://assets/parallax/skies/sky_clouds.png", 0.1, 1900.0],
+	["res://assets/parallax/skies/Sky_cloud_single.png", 0.2, 1900.0],
+	["res://assets/parallax/skies/Sky_back_mountain.png", 0.25, 1900.0],
+	["res://assets/parallax/skies/sky_front_mountain.png", 0.4, 1900.0],
+	["res://assets/parallax/skies/Sky_front_cloud.png", 0.55, 1900.0],
+	["res://assets/parallax/skies/sky_cloud_floor.png", 0.75, 1900.0],
+	["res://assets/parallax/skies/sky_cloud_floor_2.png", 0.9, 1900.0],
 ]
+const NOMBRES_CAPA := ["Cielo", "Luna", "Capa3", "Capa4", "Capa5", "Capa6", "Capa7", "Capa8", "Capa9"]
 
 
 func _pintar(layer: TileMapLayer, top: Vector2i, relleno: Vector2i, x0: int, x1: int, y0: int, y1: int) -> void:
@@ -55,9 +56,13 @@ func _fondo(root: Node2D, capas: Array) -> void:
 	root.add_child(bg)
 	bg.set_owner(root)
 	# Se agrega primero: queda detras de tiles, papa y meta.
+	var n := 0
 	for par in capas:
 		var layer := ParallaxLayer.new()
+		layer.name = str(NOMBRES_CAPA[n]) if n < NOMBRES_CAPA.size() else "Capa%d" % n
+		n += 1
 		layer.motion_scale = Vector2(float(par[1]), 0.0)
+		layer.motion_mirroring = Vector2(float(par[2]), 0.0)
 		bg.add_child(layer)
 		layer.set_owner(root)
 		var spr := Sprite2D.new()
@@ -81,12 +86,19 @@ func _base(nivel_script: String, tiempo: float, musica: String, nombre_mus: Stri
 	var layer := TileMapLayer.new()
 	layer.name = "Terreno"
 	layer.tile_set = ts
+	layer.scale = Vector2(3, 3)
 	root.add_child(layer)
 	layer.set_owner(root)
-	_pintar(layer, T_PASTO, T_TIERRA, 0, 100, 33, 36)
-	_pintar(layer, T_GRIS_TOP, T_GRIS, 31, 50, 25, 26)
-	_pintar(layer, T_GRIS_TOP, T_GRIS, 56, 75, 19, 20)
-	_pintar(layer, T_GRIS_TOP, T_GRIS, 81, 100, 26, 27)
+	# Patron del Nivel 1 (escala 3): suelo filas 8-11 + acentos.
+	_pintar(layer, T_PASTO, T_TIERRA, 0, 100, 8, 11)
+	for x in range(11, 22):
+		layer.set_cell(Vector2i(x, 5), 0, Vector2i(13, 0))
+	layer.set_cell(Vector2i(11, 5), 0, Vector2i(12, 0))
+	layer.set_cell(Vector2i(22, 5), 0, Vector2i(14, 0))
+	layer.set_cell(Vector2i(27, 6), 0, Vector2i(6, 0))
+	layer.set_cell(Vector2i(29, 6), 0, Vector2i(8, 0))
+	layer.set_cell(Vector2i(27, 7), 0, Vector2i(6, 1))
+	layer.set_cell(Vector2i(29, 7), 0, Vector2i(8, 1))
 	var papa := (load(PAPA_SCENE) as PackedScene).instantiate()
 	papa.position = Vector2(200, 200)
 	root.add_child(papa)
@@ -124,7 +136,7 @@ func _guardar(root: Node, ruta: String) -> void:
 
 
 func _init() -> void:
-	var n3 := _base("res://Niveles/nivel_3.gd", 75.0, "res://assets/Sounds/introduccion.mp3", "MusicaNivel3", FONDO_N3, 1450.0)
+	var n3 := _base("res://Niveles/nivel_3.gd", 75.0, "res://assets/Sounds/nivel1.mp3", "MusicaNivel3", FONDO_N3, 1450.0)
 	_guardar(n3, "res://Niveles/Nivel3.tscn")
 	n3.free()
 	var n4 := _base("res://Niveles/nivel_4.gd", 70.0, "res://assets/Sounds/level4.mp3", "MusicaNivel4", FONDO_N4, 1450.0)

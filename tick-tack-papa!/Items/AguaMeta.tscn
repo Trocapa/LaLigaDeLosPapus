@@ -1,7 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c54rpflij883s"]
 
-[ext_resource type="Script" path="res://Sistemas/agua.gd" id="1_agua"]
-[ext_resource type="Texture2D" path="res://assets/agua_splash.png" id="1_splash"]
+[ext_resource type="Script" uid="uid://bea6xd0jjoava" path="res://Sistemas/agua.gd" id="1_agua"]
+[ext_resource type="Texture2D" uid="uid://bd5wb45pbi4qi" path="res://assets/agua_splash.png" id="1_splash"]
+
+[sub_resource type="AtlasTexture" id="S7"]
+atlas = ExtResource("1_splash")
+region = Rect2(1064, 0, 152, 251)
 
 [sub_resource type="AtlasTexture" id="S0"]
 atlas = ExtResource("1_splash")
@@ -31,15 +35,11 @@ region = Rect2(760, 0, 152, 251)
 atlas = ExtResource("1_splash")
 region = Rect2(912, 0, 152, 251)
 
-[sub_resource type="AtlasTexture" id="S7"]
-atlas = ExtResource("1_splash")
-region = Rect2(1064, 0, 152, 251)
-
 [sub_resource type="SpriteFrames" id="SF_agua"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("S0")
+"texture": SubResource("S7")
 }],
 "loop": 1,
 "name": &"calma",
@@ -73,33 +73,51 @@ animations = [{
 "loop": 0,
 "name": &"splash",
 "speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("S0")
+}, {
+"duration": 1.0,
+"texture": SubResource("S1")
+}, {
+"duration": 1.0,
+"texture": SubResource("S2")
+}, {
+"duration": 1.0,
+"texture": SubResource("S3")
+}, {
+"duration": 1.0,
+"texture": SubResource("S4")
+}, {
+"duration": 1.0,
+"texture": SubResource("S5")
+}, {
+"duration": 1.0,
+"texture": SubResource("S6")
+}, {
+"duration": 1.0,
+"texture": SubResource("S7")
+}],
+"loop": 0,
+"name": &"splash_2",
+"speed": 12.0
 }]
 
-[sub_resource type="CircleShape2D" id="Col"]
-radius = 48.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yi7rl"]
+radius = 20.0
+height = 102.0
 
-[node name="AguaMeta" type="Area2D"]
+[node name="AguaMeta" type="Area2D" unique_id=1784081813]
 script = ExtResource("1_agua")
 es_meta = true
-radio = 48.0
 
-[node name="Anim" type="AnimatedSprite2D" parent="."]
+[node name="Anim" type="AnimatedSprite2D" parent="." unique_id=1855321036]
 position = Vector2(0, -45)
 scale = Vector2(0.6, 0.6)
 sprite_frames = SubResource("SF_agua")
-animation = &"calma"
+animation = &"splash"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("Col")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -40.0
-offset_top = -14.0
-offset_right = 40.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 24
-text = "META"
-horizontal_alignment = 1
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1896739885]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_yi7rl")

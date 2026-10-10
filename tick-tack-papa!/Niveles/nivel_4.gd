@@ -18,6 +18,6 @@ func _crear_contenido() -> void:
 	add_child(c)
 	for px in [700.0, 1100.0]:
 		var p: Area2D = PinchosS.new()
-		p.position = Vector2(px, 390.0 if px < 800.0 else 294.0)
+		p.position = Vector2(px, 374.0)
 		p.set("mortal", false)
 		add_child(p)

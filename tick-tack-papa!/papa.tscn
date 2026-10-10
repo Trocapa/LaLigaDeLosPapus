@@ -78,6 +78,10 @@ region = Rect2(471, 8, 50, 65)
 atlas = ExtResource("1_idle")
 region = Rect2(529, 8, 50, 65)
 
+[sub_resource type="AtlasTexture" id="F1"]
+atlas = ExtResource("1_papa")
+region = Rect2(216, 0, 216, 274)
+
 [sub_resource type="AtlasTexture" id="F3"]
 atlas = ExtResource("1_papa")
 region = Rect2(648, 0, 216, 274)
@@ -175,6 +179,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("F1")
+}],
+"loop": 0,
+"name": &"caer",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("E0")
 }, {
 "duration": 1.0,
@@ -262,8 +274,8 @@ spread = 180.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 80.0
 initial_velocity_max = 160.0
-scale_amount_min = 0.5
-scale_amount_max = 1.0
+scale_amount_min = 1.2
+scale_amount_max = 2.0
 color = Color(0.7, 0.95, 1, 1)
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1877477518]

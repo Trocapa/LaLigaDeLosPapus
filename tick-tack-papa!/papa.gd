@@ -50,7 +50,7 @@ const TINTE_ROJO := Color(1.0, 0.12, 0.08)
 const TINTE_INICIO := 0.35
 const TINTE_ROJO_MAX := 0.6
 # Escala por animacion (cada tira tiene distinto tamano de frame).
-const ESCALA_ANIM := {"caminar": 1.6, "quieto": 1.15, "saltar": 0.3}
+const ESCALA_ANIM := {"caminar": 1.6, "quieto": 1.15, "saltar": 0.3, "caer": 0.3}
 const ESCALA_CRIOLLA := 0.72
 
 
@@ -156,7 +156,7 @@ func _actualizar_animacion(direction: float) -> void:
 	var en_suelo := is_on_floor()
 	var moviendose: bool = direction != 0.0 or abs(velocity.x) > 20.0
 	if not en_suelo:
-		_poner_anim("saltar")
+		_poner_anim("saltar" if velocity.y < 0.0 else "caer")
 	elif moviendose:
 		_poner_anim("caminar")
 		anim.flip_h = last_facing_dir < 0.0

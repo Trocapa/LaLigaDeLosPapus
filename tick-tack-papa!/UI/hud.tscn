@@ -23,20 +23,16 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="DashMarco"]
-draw_center = false
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.85, 0.85, 0.9, 1)
-corner_radius_top_left = 40
-corner_radius_top_right = 40
-corner_radius_bottom_right = 40
-corner_radius_bottom_left = 40
-
 [sub_resource type="Shader" id="WipeShader"]
-code = "shader_type canvas_item;\nuniform float radio = 1.5;\nvoid fragment() {\n\tvec2 uv = UV - vec2(0.5);\n\tuv.x *= 1.77778;\n\tfloat d = length(uv);\n\tfloat a = smoothstep(radio - 0.08, radio, d);\n\tCOLOR = vec4(0.0, 0.0, 0.0, a);\n}"
+code = "shader_type canvas_item;
+uniform float radio = 1.5;
+void fragment() {
+	vec2 uv = UV - vec2(0.5);
+	uv.x *= 1.77778;
+	float d = length(uv);
+	float a = smoothstep(radio - 0.08, radio, d);
+	COLOR = vec4(0.0, 0.0, 0.0, a);
+}"
 
 [sub_resource type="ShaderMaterial" id="WipeMaterial"]
 shader = SubResource("WipeShader")
@@ -51,31 +47,36 @@ offset_left = 16.0
 offset_top = 16.0
 offset_right = 49.0
 offset_bottom = 112.0
+scale = Vector2(2.8799992, 2.8799992)
 texture = SubResource("TermoArt")
 expand_mode = 1
 
 [node name="TermoFill" type="TextureRect" parent="." unique_id=2083701932]
-offset_left = 22.0
-offset_top = 25.0
-offset_right = 43.0
-offset_bottom = 103.0
+offset_left = 51.000004
+offset_top = 51.0
+offset_right = 59.68056
+offset_bottom = 122.875015
+scale = Vector2(2.8799992, 2.8799992)
 expand_mode = 1
+flip_v = true
 
 [node name="Pct" type="Label" parent="." unique_id=492910655]
-offset_left = 58.0
-offset_top = 48.0
-offset_right = 140.0
-offset_bottom = 80.0
+offset_left = 122.00001
+offset_top = 54.000004
+offset_right = 189.50568
+offset_bottom = 90.00001
+scale = Vector2(1.5602589, 1.5602589)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 26
 text = "100%"
 
 [node name="Tiempo" type="Label" parent="." unique_id=816986249]
-offset_left = 512.0
-offset_top = 16.0
-offset_right = 812.0
-offset_bottom = 58.0
+offset_left = 495.00003
+offset_top = 12.000001
+offset_right = 795.0
+offset_bottom = 54.0
+scale = Vector2(1.1884824, 1.1884824)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 6
 theme_override_font_sizes/font_size = 30
@@ -83,10 +84,11 @@ text = "Tiempo: --"
 horizontal_alignment = 1
 
 [node name="Traje" type="Label" parent="." unique_id=1940217228]
-offset_left = 16.0
-offset_top = 152.0
-offset_right = 300.0
-offset_bottom = 178.0
+offset_left = 128.0
+offset_top = 107.0
+offset_right = 298.0
+offset_bottom = 133.0
+scale = Vector2(1.2112175, 1.1986301)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 5
 theme_override_font_sizes/font_size = 18
@@ -98,12 +100,13 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -63.0
-offset_top = -128.0
-offset_right = 57.0
-offset_bottom = -100.0
+offset_left = -90.0
+offset_top = -230.0
+offset_right = 30.0
+offset_bottom = -202.0
 grow_horizontal = 2
 grow_vertical = 0
+scale = Vector2(1.6318918, 1.6318918)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 20
@@ -116,21 +119,21 @@ anchor_left = 0.544
 anchor_top = 0.933
 anchor_right = 0.544
 anchor_bottom = 0.933
-offset_left = -100.32007
-offset_top = -43.76001
-offset_right = -63.52008
-offset_bottom = -8.960022
+offset_left = -109.32007
+offset_top = -121.76001
+offset_right = -72.52008
+offset_bottom = -86.96002
 grow_horizontal = 2
 grow_vertical = 0
-scale = Vector2(5, 5)
+scale = Vector2(8.159459, 8.159459)
 value = 100.0
 fill_mode = 4
 
 [node name="Bono" type="Label" parent="." unique_id=1098449586]
-offset_left = 16.0
-offset_top = 204.0
-offset_right = 400.0
-offset_bottom = 228.0
+offset_left = 22.0
+offset_top = 216.0
+offset_right = 406.0
+offset_bottom = 240.0
 theme_override_colors/font_color = Color(0.5, 1, 0.5, 1)
 theme_override_font_sizes/font_size = 16
 
@@ -153,10 +156,11 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -140.0
+offset_top = -247.99994
 offset_right = 197.0
-offset_bottom = -16.0
+offset_bottom = -123.99994
 grow_vertical = 0
+scale = Vector2(1.9200004, 1.9200004)
 theme_override_constants/separation = 6
 
 [node name="FilaUp" type="HBoxContainer" parent="Teclas" unique_id=917491319]
@@ -228,28 +232,16 @@ theme_override_font_sizes/font_size = 14
 text = "dash"
 vertical_alignment = 1
 
-[node name="DashMarco" type="Panel" parent="." unique_id=1153098906]
-anchors_preset = -1
-anchor_left = 0.544
-anchor_top = 0.933
-anchor_right = 0.544
-anchor_bottom = 0.933
-offset_left = -114.0
-offset_top = -57.0
-offset_right = -50.0
-offset_bottom = 4.0
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-theme_override_styles/panel = SubResource("DashMarco")
-
 [node name="Transicion" type="ColorRect" parent="." unique_id=1153098907]
 visible = false
+material = SubResource("WipeMaterial")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-material = SubResource("WipeMaterial")
 color = Color(0, 0, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1409014043]
+visible = false
