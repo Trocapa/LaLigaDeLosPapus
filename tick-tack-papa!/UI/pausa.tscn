@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://UI/pausa.gd" id="1_pausa"]
 [ext_resource type="Texture2D" path="res://assets/Restart.png" id="1_reset"]
 [ext_resource type="Texture2D" path="res://assets/Back.png" id="1_back"]
-[ext_resource type="AudioStream" path="res://assets/Sounds/(4 Level) Frozen Cavern.mp3" id="1_mus"]
+[ext_resource type="AudioStream" path="res://assets/Sounds/pausa.mp3" id="1_mus"]
 
 [node name="Pausa" type="Control"]
 process_mode = 3

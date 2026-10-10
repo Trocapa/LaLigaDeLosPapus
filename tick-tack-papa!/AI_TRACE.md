@@ -133,3 +133,27 @@ Todo cambio de lógica o arquitectura queda registrado aquí.
   tenhido en codigo: fondo oscuro, rojo cargando, verde listo) + caption DASH.
 - Items: levitacion sinusoidal + destellos CPUParticles2D de su color.
 - Demo: 36 checks (+tinte por tramos y carga de dash).
+
+## 2026-10-10 — Tinte original, run/idle, splash, parallax N1-N5, SFX y renombres
+- REGLA: niveles N1/N2 solo con edicion quirurgica (verificado tras cada paso);
+  `build_niveles.gd` marcado NO EJECUTAR. N3-N5 generados con script nuevo.
+- Tinte: arranca en blanco puro (color original, sin filtros) y de 35% a rojo
+  (mezcla 60%). Demo actualizada.
+- `papa_run.png` (7 frames 32px) reemplaza caminar; `papa_rey_idle.png`
+  (10 frames) nueva anim `quieto`; salto sigue sprite 4 de papaAnimation.
+  Escalas por anim (caminar 1.6, quieto 1.15, saltar 0.3, criolla x0.72).
+- Polvo de pasos mas grande (0.6-1.1).
+- `Items/AguaMeta.tscn`: sprite `agua_splash.png` (8 frames 152px, calma=
+  frame 0, splash una vez a 12 fps); `agua.gd` lo ejecuta solo si vy > 150.
+- Marco del dash: Panel con StyleBox hueco sobre la barra radial.
+- Niveles 3/4/5 nuevos (noche, bosque completo, cielo; timers 75/70/60;
+  musicas introduccion/level4/level5) + parallax por nivel (N1 forest sin
+  short/long, N2 desert, N3 night, N4 forest full, N5 skies; capas con
+  motion_scale y scroll solo horizontal). N2 ahora lleva a N3.
+- Transicion: pausa breve + cierre circular a negro (shader en HUD, 0.9 s en
+  vez de 1.5 s); `hud.iniciar_transicion()`.
+- SFX (`Sistemas/sfx.gd` + cableado): Jump9 saltos, Explosion3, SFX_Item al
+  recoger, UI_Pause/Resume, CambiarLevel (victoria, Jugar, Back).
+- Canciones renombradas por uso: menu/nivel1/nivel2/gameover/pausa/
+  introduccion.mp3 (level4/level5 intactos); 5 referencias actualizadas.
+- Demo: 38 checks (+tinte blanco y carga de dash).

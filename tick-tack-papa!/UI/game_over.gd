@@ -26,4 +26,5 @@ func _on_reset() -> void:
 
 func _on_back() -> void:
 	get_tree().paused = false
+	Sfx.suena(self, "CambiarLevel.mp3")
 	get_tree().change_scene_to_file("res://UI/menu_principal.tscn")

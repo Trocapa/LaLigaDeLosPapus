@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://63k3hhi6kfq5"
-path="res://.godot/imported/moon_front.png-048fb3e2705eaf19ca6f5a0b05e98ec0.ctex"
+path="res://.godot/imported/nigth_front.png-bbd370a0fc7d7c5e0175e7c17e8ebff6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/parallax/moon/moon_front.png"
-dest_files=["res://.godot/imported/moon_front.png-048fb3e2705eaf19ca6f5a0b05e98ec0.ctex"]
+source_file="res://assets/parallax/nigth/nigth_front.png"
+dest_files=["res://.godot/imported/nigth_front.png-bbd370a0fc7d7c5e0175e7c17e8ebff6.ctex"]
 
 [params]
 

@@ -6,7 +6,7 @@ extends NivelBase
 func _ready() -> void:
 	nivel_num = 2
 	tiempo_limite = 75.0
-	siguiente_escena = "res://Niveles/Nivel1.tscn"
+	siguiente_escena = "res://Niveles/Nivel3.tscn"
 	super._ready()
 	_crear_contenido()
 

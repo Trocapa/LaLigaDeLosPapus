@@ -20,6 +20,7 @@ const CIRCULO := Rect2(0, 0, 16, 16)
 @onready var label_tiempo: Label = $Tiempo
 @onready var label_traje: Label = $Traje
 @onready var dash_bar: TextureProgressBar = $DashBar
+@onready var transicion: ColorRect = $Transicion
 @onready var label_bono: Label = $Bono
 @onready var label_msg: Label = $Msg
 @onready var key_izq: TextureRect = $Teclas/FilaMove/KeyIzq
@@ -35,6 +36,9 @@ var _dash_rojo: ImageTexture
 var _dash_verde: ImageTexture
 var _dash_cooldown := 1.0
 var _msg_timer: Timer
+var _trans_t := -1.0
+var _trans_dur := 0.9
+var _trans_nivel: Node = null
 
 
 static func nivel_vida(vida_pct: float) -> int:
@@ -116,6 +120,7 @@ func _process(_delta: float) -> void:
 	_actualizar_tecla(key_der, "der", Input.is_action_pressed("ui_right"))
 	_actualizar_tecla(key_salto, "salto", Input.is_action_pressed("saltar"))
 	key_dash.modulate = Color(1.5, 1.5, 1.0) if Input.is_action_pressed("dash") else Color.WHITE
+	_actualizar_transicion(_delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -170,3 +175,33 @@ func mostrar_mensaje(m: String, color: Color = Color.WHITE) -> void:
 
 func mostrar_bono_f7(activo: bool) -> void:
 	label_bono.text = "BONO F7: -30% calor +10s (2 derrotas)" if activo else ""
+
+
+## Cierre circular a negro y avance de nivel (el arbol esta pausado;
+## el HUD corre en ALWAYS y anima el shader).
+func iniciar_transicion(duracion: float, nivel: Node) -> void:
+	_trans_t = 0.0
+	_trans_dur = maxf(0.2, duracion)
+	_trans_nivel = nivel
+	transicion.visible = true
+	_poner_radio(1.5)
+
+
+func _poner_radio(r: float) -> void:
+	var mat := transicion.material as ShaderMaterial
+	if mat != null:
+		mat.set_shader_parameter("radio", r)
+
+
+func _actualizar_transicion(delta: float) -> void:
+	if _trans_t < 0.0:
+		return
+	_trans_t += delta
+	var f := clampf(_trans_t / _trans_dur, 0.0, 1.0)
+	_poner_radio(lerpf(1.5, 0.0, f))
+	if f >= 1.0:
+		_trans_t = -1.0
+		var n := _trans_nivel
+		_trans_nivel = null
+		if n != null and is_instance_valid(n) and n.has_method("siguiente"):
+			n.call("siguiente")

@@ -86,6 +86,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("papa") and body.has_method("aplicar_item"):
 		consumido = true # RN-02: consumo unico
 		var msg: String = str(body.call("aplicar_item", tipo))
+		Sfx.suena(self, "SFX_Item.mp3")
 		recogido.emit(tipo, msg)
 		var hud := get_tree().get_first_node_in_group("hud")
 		if hud != null and hud.has_method("mostrar_mensaje"):

@@ -23,6 +23,25 @@ corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
+[sub_resource type="StyleBoxFlat" id="DashMarco"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.85, 0.85, 0.9, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="Shader" id="WipeShader"]
+code = "shader_type canvas_item;\nuniform float radio = 1.5;\nvoid fragment() {\n\tvec2 uv = UV - vec2(0.5);\n\tuv.x *= 1.77778;\n\tfloat d = length(uv);\n\tfloat a = smoothstep(radio - 0.08, radio, d);\n\tCOLOR = vec4(0.0, 0.0, 0.0, a);\n}"
+
+[sub_resource type="ShaderMaterial" id="WipeMaterial"]
+shader = SubResource("WipeShader")
+shader_parameter/radio = 1.5
+
 [node name="HUD" type="CanvasLayer" unique_id=1488872896]
 process_mode = 3
 script = ExtResource("1_hud")
@@ -208,3 +227,29 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 14
 text = "dash"
 vertical_alignment = 1
+
+[node name="DashMarco" type="Panel" parent="." unique_id=1153098906]
+anchors_preset = -1
+anchor_left = 0.544
+anchor_top = 0.933
+anchor_right = 0.544
+anchor_bottom = 0.933
+offset_left = -114.0
+offset_top = -57.0
+offset_right = -50.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("DashMarco")
+
+[node name="Transicion" type="ColorRect" parent="." unique_id=1153098907]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+material = SubResource("WipeMaterial")
+color = Color(0, 0, 0, 1)

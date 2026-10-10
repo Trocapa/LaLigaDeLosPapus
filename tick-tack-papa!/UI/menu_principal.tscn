@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://UI/menu_principal.gd" id="1_menu"]
 [ext_resource type="Texture2D" path="res://assets/Play.png" id="1_play"]
-[ext_resource type="AudioStream" path="res://assets/Sounds/(main) Cozy Game Over.mp3" id="1_main"]
+[ext_resource type="AudioStream" path="res://assets/Sounds/menu.mp3" id="1_main"]
 
 [node name="MenuPrincipal" type="Control"]
 layout_mode = 3

@@ -1,22 +1,105 @@
-[gd_scene format=3 uid="uid://dawwaua3naokj"]
+[gd_scene format=3]
 
-[ext_resource type="Script" uid="uid://bea6xd0jjoava" path="res://Sistemas/agua.gd" id="1_agua"]
-[ext_resource type="Texture2D" uid="uid://dcccu4yy672pt" path="res://assets/Items.png" id="1_items"]
+[ext_resource type="Script" path="res://Sistemas/agua.gd" id="1_agua"]
+[ext_resource type="Texture2D" path="res://assets/agua_splash.png" id="1_splash"]
 
-[sub_resource type="AtlasTexture" id="Art"]
-atlas = ExtResource("1_items")
-region = Rect2(8, 64, 315, 211)
+[sub_resource type="AtlasTexture" id="S0"]
+atlas = ExtResource("1_splash")
+region = Rect2(0, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S1"]
+atlas = ExtResource("1_splash")
+region = Rect2(152, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S2"]
+atlas = ExtResource("1_splash")
+region = Rect2(304, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S3"]
+atlas = ExtResource("1_splash")
+region = Rect2(456, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S4"]
+atlas = ExtResource("1_splash")
+region = Rect2(608, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S5"]
+atlas = ExtResource("1_splash")
+region = Rect2(760, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S6"]
+atlas = ExtResource("1_splash")
+region = Rect2(912, 0, 152, 251)
+
+[sub_resource type="AtlasTexture" id="S7"]
+atlas = ExtResource("1_splash")
+region = Rect2(1064, 0, 152, 251)
+
+[sub_resource type="SpriteFrames" id="SF_agua"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("S0")
+}],
+"loop": 1,
+"name": &"calma",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("S0")
+}, {
+"duration": 1.0,
+"texture": SubResource("S1")
+}, {
+"duration": 1.0,
+"texture": SubResource("S2")
+}, {
+"duration": 1.0,
+"texture": SubResource("S3")
+}, {
+"duration": 1.0,
+"texture": SubResource("S4")
+}, {
+"duration": 1.0,
+"texture": SubResource("S5")
+}, {
+"duration": 1.0,
+"texture": SubResource("S6")
+}, {
+"duration": 1.0,
+"texture": SubResource("S7")
+}],
+"loop": 0,
+"name": &"splash",
+"speed": 12.0
+}]
 
 [sub_resource type="CircleShape2D" id="Col"]
 radius = 48.0
 
-[node name="AguaMeta" type="Area2D" unique_id=1570709795]
+[node name="AguaMeta" type="Area2D"]
 script = ExtResource("1_agua")
 es_meta = true
+radio = 48.0
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1933817783]
-scale = Vector2(0.3, 0.3)
-texture = SubResource("Art")
+[node name="Anim" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -45)
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("SF_agua")
+animation = &"calma"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1827172761]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("Col")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -40.0
+offset_top = -14.0
+offset_right = 40.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_font_sizes/font_size = 24
+text = "META"
+horizontal_alignment = 1

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dslf01tmqgwq0"
-path="res://.godot/imported/moon_sky.png-ac2713aa35ffe3289de361df996a7f2f.ctex"
+uid="uid://bd5wb45pbi4qi"
+path="res://.godot/imported/agua_splash.png-de06beb8d866da3c6e4c471e4f983ac1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/parallax/moon/moon_sky.png"
-dest_files=["res://.godot/imported/moon_sky.png-ac2713aa35ffe3289de361df996a7f2f.ctex"]
+source_file="res://assets/agua_splash.png"
+dest_files=["res://.godot/imported/agua_splash.png-de06beb8d866da3c6e4c471e4f983ac1.ctex"]
 
 [params]
 

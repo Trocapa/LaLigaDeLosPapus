@@ -6,33 +6,77 @@
 [ext_resource type="Texture2D" path="res://assets/Dust Particle.png" id="1_dust"]
 [ext_resource type="Script" uid="uid://dqnhu8e2dwaxw" path="res://papa.gd" id="1_qivgk"]
 
-[sub_resource type="AtlasTexture" id="F0"]
-atlas = ExtResource("1_papa")
-region = Rect2(0, 0, 216, 274)
+[ext_resource type="Texture2D" path="res://assets/Dust Particle.png" id="1_dust"]
+[ext_resource type="Texture2D" path="res://assets/papa_run.png" id="1_run"]
+[ext_resource type="Texture2D" path="res://assets/papa_rey_idle.png" id="1_idle"]
 
-[sub_resource type="AtlasTexture" id="F1"]
-atlas = ExtResource("1_papa")
-region = Rect2(216, 0, 216, 274)
+[sub_resource type="AtlasTexture" id="R0"]
+atlas = ExtResource("1_run")
+region = Rect2(13, 0, 32, 46)
 
-[sub_resource type="AtlasTexture" id="F2"]
-atlas = ExtResource("1_papa")
-region = Rect2(432, 0, 216, 274)
+[sub_resource type="AtlasTexture" id="R1"]
+atlas = ExtResource("1_run")
+region = Rect2(45, 0, 32, 46)
 
-[sub_resource type="AtlasTexture" id="F4"]
-atlas = ExtResource("1_papa")
-region = Rect2(864, 0, 216, 274)
+[sub_resource type="AtlasTexture" id="R2"]
+atlas = ExtResource("1_run")
+region = Rect2(77, 0, 32, 46)
 
-[sub_resource type="AtlasTexture" id="F5"]
-atlas = ExtResource("1_papa")
-region = Rect2(1080, 0, 216, 274)
+[sub_resource type="AtlasTexture" id="R3"]
+atlas = ExtResource("1_run")
+region = Rect2(109, 0, 32, 46)
 
-[sub_resource type="AtlasTexture" id="F6"]
-atlas = ExtResource("1_papa")
-region = Rect2(1296, 0, 216, 274)
+[sub_resource type="AtlasTexture" id="R4"]
+atlas = ExtResource("1_run")
+region = Rect2(141, 0, 32, 46)
 
-[sub_resource type="AtlasTexture" id="F7"]
-atlas = ExtResource("1_papa")
-region = Rect2(1512, 0, 216, 274)
+[sub_resource type="AtlasTexture" id="R5"]
+atlas = ExtResource("1_run")
+region = Rect2(173, 0, 32, 46)
+
+[sub_resource type="AtlasTexture" id="R6"]
+atlas = ExtResource("1_run")
+region = Rect2(205, 0, 32, 46)
+
+[sub_resource type="AtlasTexture" id="I0"]
+atlas = ExtResource("1_idle")
+region = Rect2(7, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I1"]
+atlas = ExtResource("1_idle")
+region = Rect2(65, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I2"]
+atlas = ExtResource("1_idle")
+region = Rect2(123, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I3"]
+atlas = ExtResource("1_idle")
+region = Rect2(181, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I4"]
+atlas = ExtResource("1_idle")
+region = Rect2(239, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I5"]
+atlas = ExtResource("1_idle")
+region = Rect2(297, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I6"]
+atlas = ExtResource("1_idle")
+region = Rect2(355, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I7"]
+atlas = ExtResource("1_idle")
+region = Rect2(413, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I8"]
+atlas = ExtResource("1_idle")
+region = Rect2(471, 8, 50, 65)
+
+[sub_resource type="AtlasTexture" id="I9"]
+atlas = ExtResource("1_idle")
+region = Rect2(529, 8, 50, 65)
 
 [sub_resource type="AtlasTexture" id="F3"]
 atlas = ExtResource("1_papa")
@@ -62,29 +106,64 @@ region = Rect2(64, 32, 32, 32)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("F0")
+"texture": SubResource("R0")
 }, {
 "duration": 1.0,
-"texture": SubResource("F1")
+"texture": SubResource("R1")
 }, {
 "duration": 1.0,
-"texture": SubResource("F2")
+"texture": SubResource("R2")
 }, {
 "duration": 1.0,
-"texture": SubResource("F4")
+"texture": SubResource("R3")
 }, {
 "duration": 1.0,
-"texture": SubResource("F5")
+"texture": SubResource("R4")
 }, {
 "duration": 1.0,
-"texture": SubResource("F6")
+"texture": SubResource("R5")
 }, {
 "duration": 1.0,
-"texture": SubResource("F7")
+"texture": SubResource("R6")
 }],
 "loop": 1,
 "name": &"caminar",
 "speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("I0")
+}, {
+"duration": 1.0,
+"texture": SubResource("I1")
+}, {
+"duration": 1.0,
+"texture": SubResource("I2")
+}, {
+"duration": 1.0,
+"texture": SubResource("I3")
+}, {
+"duration": 1.0,
+"texture": SubResource("I4")
+}, {
+"duration": 1.0,
+"texture": SubResource("I5")
+}, {
+"duration": 1.0,
+"texture": SubResource("I6")
+}, {
+"duration": 1.0,
+"texture": SubResource("I7")
+}, {
+"duration": 1.0,
+"texture": SubResource("I8")
+}, {
+"duration": 1.0,
+"texture": SubResource("I9")
+}],
+"loop": 1,
+"name": &"quieto",
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -126,9 +205,9 @@ colors = PackedColorArray(1, 0.82, 0.25, 1, 1, 0.35, 0.08, 1, 0.3, 0.22, 0.2, 0)
 script = ExtResource("1_qivgk")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1764945849]
-scale = Vector2(0.32, 0.32)
+scale = Vector2(1.15, 1.15)
 sprite_frames = SubResource("SF_papa")
-animation = &"caminar"
+animation = &"quieto"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1910668550]
 position = Vector2(0, -1.5)
@@ -170,8 +249,8 @@ spread = 50.0
 gravity = Vector2(0, 300)
 initial_velocity_min = 20.0
 initial_velocity_max = 50.0
-scale_amount_min = 0.4
-scale_amount_max = 0.8
+scale_amount_min = 0.6
+scale_amount_max = 1.1
 color = Color(0.85, 0.8, 0.7, 1)
 texture = ExtResource("1_dust")
 

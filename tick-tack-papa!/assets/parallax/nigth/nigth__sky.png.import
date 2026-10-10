@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3waf75keokmd"
-path="res://.godot/imported/moon_floor.png-195a2ae5fcc211ef5b0b57495f2ccb61.ctex"
+uid="uid://dslf01tmqgwq0"
+path="res://.godot/imported/nigth__sky.png-0865d762badd6281c62e8c4b1e3bbfea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/parallax/moon/moon_floor.png"
-dest_files=["res://.godot/imported/moon_floor.png-195a2ae5fcc211ef5b0b57495f2ccb61.ctex"]
+source_file="res://assets/parallax/nigth/nigth__sky.png"
+dest_files=["res://.godot/imported/nigth__sky.png-0865d762badd6281c62e8c4b1e3bbfea.ctex"]
 
 [params]
 

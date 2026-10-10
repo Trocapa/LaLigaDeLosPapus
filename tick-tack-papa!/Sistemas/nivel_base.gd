@@ -128,15 +128,15 @@ func completar_nivel() -> void:
 		gs.call("registrar_victoria", nivel_num)
 	var hud := get_tree().get_first_node_in_group("hud")
 	if hud != null and hud.has_method("mostrar_mensaje"):
-		hud.call("mostrar_mensaje", "NIVEL COMPLETADO! Al siguiente...", Color(0.4, 1.0, 0.4))
+		hud.call("mostrar_mensaje", "NIVEL COMPLETADO!", Color(0.4, 1.0, 0.4))
+	Sfx.suena(self, "CambiarLevel.mp3")
 	if siguiente_escena != "" and ResourceLoader.exists(siguiente_escena):
-		# Avance automatico a los 1.5 s (timer hijo: si reintentas antes, muere con el nivel)
-		var adv := Timer.new()
-		adv.one_shot = true
-		adv.wait_time = 1.5
-		add_child(adv)
-		adv.timeout.connect(siguiente)
-		adv.start()
+		# Pausa breve + cierre circular a negro (lo anima el HUD en ALWAYS).
+		get_tree().paused = true
+		if hud != null and hud.has_method("iniciar_transicion"):
+			hud.call("iniciar_transicion", 0.9, self)
+		else:
+			siguiente()
 	else:
 		_mostrar_game_over("NIVEL COMPLETADO!", "Temperatura 0%. Fuente alcanzada.")
 
@@ -174,10 +174,12 @@ func alternar_pausa() -> void:
 		return
 	if get_tree().paused:
 		get_tree().paused = false
+		Sfx.suena(self, "SFX_UI_Resume.mp3")
 		get_tree().call_group("musica_nivel", "set_stream_paused", false)
 		_cerrar_pausa()
 	else:
 		get_tree().paused = true
+		Sfx.suena(self, "SFX_UI_Pause.mp3")
 		get_tree().call_group("musica_nivel", "set_stream_paused", true)
 		if pausa_panel == null and ResourceLoader.exists(PAUSA_SCENE):
 			pausa_panel = ((load(PAUSA_SCENE) as PackedScene).instantiate() as Control)

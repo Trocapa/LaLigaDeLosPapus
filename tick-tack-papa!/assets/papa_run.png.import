@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjh0230c4amb3"
-path="res://.godot/imported/moon_back.png-027f6a1b08785f87408bc783b0ebb664.ctex"
+uid="uid://bg0wu0x7eskup"
+path="res://.godot/imported/papa_run.png-85667add3d489d1e7375494bb3048255.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/parallax/moon/moon_back.png"
-dest_files=["res://.godot/imported/moon_back.png-027f6a1b08785f87408bc783b0ebb664.ctex"]
+source_file="res://assets/papa_run.png"
+dest_files=["res://.godot/imported/papa_run.png-85667add3d489d1e7375494bb3048255.ctex"]
 
 [params]
 

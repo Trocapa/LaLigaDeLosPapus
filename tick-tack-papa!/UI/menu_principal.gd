@@ -10,4 +10,5 @@ func _ready() -> void:
 
 
 func _on_jugar_pressed() -> void:
+	Sfx.suena(self, "CambiarLevel.mp3")
 	get_tree().change_scene_to_file("res://Niveles/Nivel1.tscn")
