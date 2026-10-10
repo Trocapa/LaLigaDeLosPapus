@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Sistemas/item.gd" id="1_item"]
+[ext_resource type="Texture2D" path="res://assets/Items.png" id="1_items"]
+
+[sub_resource type="AtlasTexture" id="Art"]
+atlas = ExtResource("1_items")
+region = Rect2(418, 56, 158, 254)
+
+[sub_resource type="CircleShape2D" id="Col"]
+radius = 20.0
+
+[node name="ItemBotella" type="Area2D"]
+script = ExtResource("1_item")
+tipo = "botella"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.15, 0.15)
+texture = SubResource("Art")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("Col")

@@ -1,7 +1,77 @@
 [gd_scene format=3 uid="uid://cdtn2pqbrine6"]
 
 [ext_resource type="Texture2D" uid="uid://b3v8jacaao6x2" path="res://icon.svg" id="1_3hx03"]
+[ext_resource type="Texture2D" uid="uid://d1qsqkw0i8s4p" path="res://assets/papaAnimation.png" id="1_papa"]
 [ext_resource type="Script" uid="uid://dqnhu8e2dwaxw" path="res://papa.gd" id="1_qivgk"]
+
+[sub_resource type="AtlasTexture" id="F0"]
+atlas = ExtResource("1_papa")
+region = Rect2(0, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F1"]
+atlas = ExtResource("1_papa")
+region = Rect2(216, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F2"]
+atlas = ExtResource("1_papa")
+region = Rect2(432, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F4"]
+atlas = ExtResource("1_papa")
+region = Rect2(864, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F5"]
+atlas = ExtResource("1_papa")
+region = Rect2(1080, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F6"]
+atlas = ExtResource("1_papa")
+region = Rect2(1296, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F7"]
+atlas = ExtResource("1_papa")
+region = Rect2(1512, 0, 216, 274)
+
+[sub_resource type="AtlasTexture" id="F3"]
+atlas = ExtResource("1_papa")
+region = Rect2(648, 0, 216, 274)
+
+[sub_resource type="SpriteFrames" id="SF_papa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("F0")
+}, {
+"duration": 1.0,
+"texture": SubResource("F1")
+}, {
+"duration": 1.0,
+"texture": SubResource("F2")
+}, {
+"duration": 1.0,
+"texture": SubResource("F4")
+}, {
+"duration": 1.0,
+"texture": SubResource("F5")
+}, {
+"duration": 1.0,
+"texture": SubResource("F6")
+}, {
+"duration": 1.0,
+"texture": SubResource("F7")
+}],
+"loop": 1,
+"name": &"caminar",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("F3")
+}],
+"loop": 0,
+"name": &"saltar",
+"speed": 8.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_anni6"]
 size = Vector2(76, 73)
@@ -10,23 +80,25 @@ size = Vector2(76, 73)
 offsets = PackedFloat32Array(0, 0.55, 1)
 colors = PackedColorArray(1, 0.82, 0.25, 1, 1, 0.35, 0.08, 1, 0.3, 0.22, 0.2, 0)
 
-[node name="Papa" type="CharacterBody2D" unique_id=932198556]
+[node name="Papa" type="CharacterBody2D" unique_id=1541294318]
 script = ExtResource("1_qivgk")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=227930284]
-scale = Vector2(0.6328125, 0.6328125)
-texture = ExtResource("1_3hx03")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1764945849]
+scale = Vector2(0.32, 0.32)
+sprite_frames = SubResource("SF_papa")
+animation = &"caminar"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=610700455]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1910668550]
 position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_anni6")
 
-[node name="DashTimer" type="Timer" parent="." unique_id=1100025936]
+[node name="DashTimer" type="Timer" parent="." unique_id=494735209]
 one_shot = true
 
-[node name="ExplosionParticles" type="CPUParticles2D" parent="." unique_id=364372207]
+[node name="ExplosionParticles" type="CPUParticles2D" parent="." unique_id=1175964706]
 emitting = false
 amount = 48
+texture = ExtResource("1_3hx03")
 lifetime = 0.9
 one_shot = true
 explosiveness = 1.0
@@ -39,7 +111,8 @@ damping_max = 150.0
 scale_amount_min = 0.05
 scale_amount_max = 0.1
 color_ramp = SubResource("ExplosionGrad")
-texture = ExtResource("1_3hx03")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1146649165]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1877477518]
+zoom = Vector2(1.7, 1.7)
 position_smoothing_enabled = true
+drag_horizontal_enabled = true

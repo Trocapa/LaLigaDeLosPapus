@@ -1,8 +1,7 @@
 class_name AguaZona
 extends Area2D
 ## RF-03 / RF-14 / RF-08: zona de agua.
-## - AguaMeta (es_meta=true, verde): completa el nivel y avanza al siguiente.
-## - AguaCharco (es_meta=false, azul): quita -30% calor sin completar (item de agua).
+## - AguaMeta (es_meta=true, charco): completa el nivel y avanza al siguiente.
 ## La escena trae Sprite2D + CollisionShape2D propios; aqui SOLO se crean
 ## por codigo si faltan (para no pisar ediciones del editor).
 

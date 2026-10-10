@@ -2,7 +2,7 @@ class_name ItemSpawner
 extends Node2D
 ## RF-15 + RN-06: spawner con tabla ponderada que escala por nivel (1-5).
 ## Nivel 1: 100% ventajas fijas. N2: 80/20. N3: introduce ? y carbon.
-## N4: spawners dinamicos con mas aji. N5: escasez de hielo.
+## N4: spawners dinamicos con mas aji. N5: escasez de botella.
 
 const ITEM_SCRIPT := preload("res://Sistemas/item.gd")
 
@@ -33,15 +33,15 @@ func _process(delta: float) -> void:
 func tabla_pesos() -> Dictionary:
 	match nivel:
 		1:
-			return {"hielo": 50.0, "aceite": 50.0}
+			return {"botella": 50.0, "aceite": 50.0}
 		2:
-			return {"hielo": 40.0, "aceite": 25.0, "mantequilla": 15.0, "sal": 20.0}
+			return {"botella": 40.0, "aceite": 25.0, "mantequilla": 15.0, "sal": 20.0}
 		3:
-			return {"hielo": 25.0, "aceite": 20.0, "mantequilla": 10.0, "carbon": 20.0, "misterioso": 15.0, "sal": 10.0}
+			return {"botella": 25.0, "aceite": 20.0, "mantequilla": 10.0, "carbon": 20.0, "misterioso": 15.0, "sal": 10.0}
 		4:
-			return {"hielo": 15.0, "aceite": 20.0, "mantequilla": 15.0, "carbon": 15.0, "aji": 20.0, "misterioso": 10.0, "sal": 5.0}
+			return {"botella": 15.0, "aceite": 20.0, "mantequilla": 15.0, "carbon": 15.0, "aji": 20.0, "misterioso": 10.0, "sal": 5.0}
 		_:
-			return {"hielo": 8.0, "aceite": 12.0, "mantequilla": 10.0, "carbon": 25.0, "aji": 25.0, "misterioso": 10.0, "sal": 10.0}
+			return {"botella": 8.0, "aceite": 12.0, "mantequilla": 10.0, "carbon": 25.0, "aji": 25.0, "misterioso": 10.0, "sal": 10.0}
 
 
 func elegir_tipo() -> String:
@@ -55,7 +55,7 @@ func elegir_tipo() -> String:
 		acc += float(tabla[k])
 		if r <= acc:
 			return str(k)
-	return "hielo"
+	return "botella"
 
 
 func spawn_aleatorio() -> Node:

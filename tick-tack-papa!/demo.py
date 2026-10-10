@@ -5,11 +5,11 @@ import random
 
 BASE_HEAT = 4.0  # %/s (trajes.gd BASE_HEAT_POR_SEG)
 TRAJES = {
-    "rey":      {"speed": 300.0, "jump": -400.0, "heat_mult": 1.0},
-    "criolla":  {"speed": 390.0, "jump": -400.0, "heat_mult": 1.5},
-    "rustica":  {"speed": 300.0, "jump": -320.0, "heat_mult": 1.0, "inmune": True},
-    "helada":   {"speed": 300.0, "jump": -400.0, "heat_mult": 0.5},
-    "picante":  {"speed": 340.0, "jump": -400.0, "heat_mult": 1.2, "doble_salto": True},
+    "rey":      {"speed": 300.0, "jump": -550.0, "heat_mult": 1.0},
+    "criolla":  {"speed": 390.0, "jump": -550.0, "heat_mult": 1.5},
+    "rustica":  {"speed": 300.0, "jump": -440.0, "heat_mult": 1.0, "inmune": True},
+    "helada":   {"speed": 300.0, "jump": -550.0, "heat_mult": 0.5},
+    "picante":  {"speed": 340.0, "jump": -550.0, "heat_mult": 1.2, "doble_salto": True},
 }
 
 class Papa:
@@ -32,7 +32,7 @@ class Papa:
         self.temp = max(0.0, self.temp-30.0); self.chili=self.sal=self.invert=0.0
         if self.traje == "picante": self.traje = "rey"  # RF-08
     def item(self, tipo, rng):
-        if tipo=="hielo": self.temp=max(0.0,self.temp-20.0); self.freeze=3.0; return +5.0 if False else 0.0
+        if tipo=="botella": self.temp=max(0.0,self.temp-20.0); return 0.0
         if tipo=="aceite": return 5.0
         if tipo=="mantequilla": self.butter=4.0; return 0.0
         if tipo=="carbon": self.temp=min(100.0,self.temp+20.0); self.viva=self.temp<100.0; return 0.0
@@ -50,18 +50,18 @@ class Papa:
     def speed(self): return TRAJES[self.traje]["speed"]*(1.3 if self.butter>0 else 1.0)
 
 TABLAS = {
-    1: {"hielo":50,"aceite":50},
-    2: {"hielo":40,"aceite":25,"mantequilla":15,"sal":20},
-    3: {"hielo":25,"aceite":20,"mantequilla":10,"carbon":20,"misterioso":15,"sal":10},
-    4: {"hielo":15,"aceite":20,"mantequilla":15,"carbon":15,"aji":20,"misterioso":10,"sal":5},
-    5: {"hielo":8,"aceite":12,"mantequilla":10,"carbon":25,"aji":25,"misterioso":10,"sal":10},
+    1: {"botella":50,"aceite":50},
+    2: {"botella":40,"aceite":25,"mantequilla":15,"sal":20},
+    3: {"botella":25,"aceite":20,"mantequilla":10,"carbon":20,"misterioso":15,"sal":10},
+    4: {"botella":15,"aceite":20,"mantequilla":15,"carbon":15,"aji":20,"misterioso":10,"sal":5},
+    5: {"botella":8,"aceite":12,"mantequilla":10,"carbon":25,"aji":25,"misterioso":10,"sal":10},
 }
 def elegir(nivel, rng):
     t=TABLAS[nivel]; tot=sum(t.values()); r=rng.random()*tot; a=0.0
     for k,v in t.items():
         a+=v
         if r<=a: return k
-    return "hielo"
+    return "botella"
 
 ok = lambda c,msg: print(("PASS " if c else "FAIL ")+msg) or (not c and (_ for _ in ()).throw(SystemExit(f"FALLO: {msg}")))
 
@@ -78,20 +78,20 @@ p=Papa(); p.temp=60.0; p.chili=5.0; p.agua(); ok(p.temp==30.0 and p.chili==0, f"
 # RF-04/F6 dash
 p=Papa(); ok(p.dash() and not p.dash(), "RF-04/F6 dash con cooldown 1s")
 p.tick(1.0); ok(p.dash(), "dash listo tras cooldown (HUD RF-12)")
-ok(abs(Papa().speed()-300.0)<1e-6 and abs(Papa().jump()+400.0)<1e-6, "RF-04 movimiento base 300/-400")
+ok(abs(Papa().speed()-300.0)<1e-6 and abs(Papa().jump()+550.0)<1e-6, "RF-04 movimiento base 300/-550")
 # RF-05 catalogo
-p=Papa(); p.temp=50.0; p.item("hielo",random); ok(p.temp==30.0 and p.freeze==3.0, "hielo -20% + freeze 3s")
+p=Papa(); p.temp=50.0; p.item("botella",random); ok(p.temp==30.0, "botella -20% calor")
 p=Papa(); extra=p.item("aceite",random); ok(extra==5.0, "aceite +5s")
 p=Papa(); p.item("mantequilla",random); ok(abs(p.speed()-390.0)<1e-6, f"mantequilla +30% vel ({p.speed()})")
 p=Papa(); p.item("carbon",random); ok(p.temp==20.0, "carbon +20%")
 p=Papa(); p.item("aji",random); ok(p.chili==5.0 and abs(p.heat()-8.0)<1e-6, "aji 2x calor 5s")
-p=Papa(); p.item("sal",random); ok(p.jump()==-300.0, "sal -25% salto 3s")
+p=Papa(); p.item("sal",random); ok(p.jump()==-412.5, "sal -25% salto 3s")
 rng=random.Random(1); vistos=set()
 for _ in range(200):
     q=Papa(); q.item("misterioso",rng); vistos.add("frio" if q.temp==0.0 else "caliente")
 ok(vistos=={"frio","caliente"}, f"misterioso 50/50 ambas ramas {vistos}")
 # RF-07 trajes extras
-ok(TRAJES["rustica"]["jump"]==-320.0 and TRAJES["rustica"].get("inmune"), "rustica salto -20% + inmune pinchos")
+ok(TRAJES["rustica"]["jump"]==-440.0 and TRAJES["rustica"].get("inmune"), "rustica salto -20% + inmune pinchos")
 ok(TRAJES["picante"].get("doble_salto"), "picante doble salto")
 p=Papa(traje="picante"); p.agua(); ok(p.traje=="rey", "RF-08 picante pierde traje con agua")
 # RF-06/F7 bono
@@ -101,7 +101,7 @@ p=Papa(nivel=1,bono_f7=True); p.tick(1.0); ok(abs(p.temp-2.8)<1e-6, f"F7 bono he
 p=Papa(); p.temp=70.0; p.agua(); p.temp=0.0; ok(p.temp==0.0, "RF-14 meta resetea 0% y frena timer")
 # RF-15/RN-06 spawner
 rng=random.Random(7)
-ok(set(elegir(1,rng) for _ in range(50))<={"hielo","aceite"}, "RN-06 N1 100% ventajas fijas")
+ok(set(elegir(1,rng) for _ in range(50))<={"botella","aceite"}, "RN-06 N1 100% ventajas fijas")
 from collections import Counter
 c=Counter(elegir(2,rng) for _ in range(2000))
 ok("sal" in c and c["sal"]/2000>0.1, f"RN-06 N2 incluye sal ~20% (sal={c['sal']/20:.1f}%)")

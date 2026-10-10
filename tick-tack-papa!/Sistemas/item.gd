@@ -1,18 +1,19 @@
 class_name ItemRecogible
 extends Area2D
 ## RF-05 + RN-02: item de un solo uso. Catalogo 3.1/3.2/3.3 + trajes RF-07.
-## Tipos: hielo, aceite, mantequilla, carbon, aji, sal, misterioso,
+## Tipos: botella, aceite, mantequilla, carbon, aji, sal, misterioso,
 ##        traje_criolla, traje_rustica, traje_helada, traje_picante.
-## La escena (Items/*.tscn) trae Sprite2D + CollisionShape2D + Label propios;
-## aqui SOLO se crean por codigo si faltan (para no pisar ediciones del editor).
+## La escena (Items/*.tscn) trae Sprite2D + CollisionShape2D propios con el
+## arte final; aqui SOLO se crea colision por codigo si falta (para no pisar
+## ediciones del editor). No se toca modulate ni se agregan etiquetas.
 
 signal recogido(tipo: String, mensaje: String)
 
-@export var tipo: String = "hielo"
+@export var tipo: String = "botella"
 var consumido: bool = false
 
 const COLORES := {
-	"hielo": Color(0.6, 0.9, 1.0),
+	"botella": Color(0.6, 0.9, 1.0),
 	"aceite": Color(1.0, 0.8, 0.2),
 	"mantequilla": Color(1.0, 0.95, 0.6),
 	"carbon": Color(0.25, 0.25, 0.25),
@@ -25,13 +26,6 @@ const COLORES := {
 	"traje_picante": Color(0.9, 0.3, 0.15),
 }
 
-const LETRAS := {
-	"hielo": "H", "aceite": "+", "mantequilla": "»", "carbon": "!",
-	"aji": "A", "sal": "S", "misterioso": "?",
-	"traje_criolla": "T", "traje_rustica": "T",
-	"traje_helada": "T", "traje_picante": "T",
-}
-
 
 func _ready() -> void:
 	add_to_group("item")
@@ -42,23 +36,13 @@ func _ready() -> void:
 		shape.radius = 20.0
 		cs.shape = shape
 		add_child(cs)
-	if get_node_or_null("Sprite2D") == null:
+	if get_node_or_null("Sprite2D") == null and get_node_or_null("Polygon2D") == null:
 		var poly := Polygon2D.new()
-		poly.name = "Sprite2D"
+		poly.name = "Polygon2D"
 		var s := 16.0
 		poly.polygon = PackedVector2Array([Vector2(-s, -s), Vector2(s, -s), Vector2(s, s), Vector2(-s, s)])
 		poly.color = COLORES.get(tipo, Color.WHITE)
 		add_child(poly)
-	else:
-		var spr := get_node_or_null("Sprite2D")
-		if spr is Sprite2D:
-			(spr as Sprite2D).modulate = COLORES.get(tipo, Color.WHITE)
-	if get_node_or_null("Label") == null:
-		var label := Label.new()
-		label.name = "Label"
-		label.text = LETRAS.get(tipo, "?")
-		label.position = Vector2(-6, -10)
-		add_child(label)
 	body_entered.connect(_on_body_entered)
 
 

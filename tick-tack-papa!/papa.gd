@@ -28,7 +28,6 @@ var dash_direction: Vector2 = Vector2.ZERO
 var last_facing_dir: float = 1.0
 var dash_cooldown_restante: float = 0.0
 
-var freeze_restante: float = 0.0
 var butter_restante: float = 0.0
 var chili_restante: float = 0.0
 var sal_restante: float = 0.0
@@ -36,7 +35,7 @@ var controles_invertidos_restante: float = 0.0
 var saltos_extra: int = 0
 
 @onready var dash_timer: Timer = $DashTimer
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var anim: AnimatedSprite2D = $AnimatedSprite2D
 @onready var explosion_particles: CPUParticles2D = $ExplosionParticles
 
 var _cooldown_timer: Timer
@@ -66,6 +65,7 @@ func _ready() -> void:
 			traje = t
 	_aplicar_color_traje()
 	traje_changed.emit(traje)
+	anim.play("caminar")
 
 
 func stats() -> Dictionary:
@@ -137,12 +137,27 @@ func _physics_process(delta: float) -> void:
 					velocity.x = 0.0
 			else:
 				velocity.x = move_toward(velocity.x, 0.0, velocidad_actual())
+	_actualizar_animacion(direction)
 	move_and_slide()
 
 
-func _actualizar_temperatura(delta: float) -> void:
-	if freeze_restante > 0.0:
+## Sprite 4 de la tira = salto; resto = caminar.
+func _actualizar_animacion(direction: float) -> void:
+	if anim == null:
 		return
+	if not is_on_floor():
+		if anim.animation != "saltar":
+			anim.play("saltar")
+	elif direction != 0.0 or abs(velocity.x) > 20.0:
+		if anim.animation != "caminar" or not anim.is_playing():
+			anim.play("caminar")
+		anim.flip_h = last_facing_dir < 0.0
+	else:
+		anim.stop()
+		anim.frame = 0
+
+
+func _actualizar_temperatura(delta: float) -> void:
 	temperatura = clampf(temperatura + heat_por_seg() * delta, 0.0, 100.0)
 	_actualizar_tinte()
 	_efecto_tick += delta
@@ -152,7 +167,6 @@ func _actualizar_temperatura(delta: float) -> void:
 
 
 func _actualizar_efectos(delta: float) -> void:
-	freeze_restante = maxf(0.0, freeze_restante - delta)
 	butter_restante = maxf(0.0, butter_restante - delta)
 	chili_restante = maxf(0.0, chili_restante - delta)
 	sal_restante = maxf(0.0, sal_restante - delta)
@@ -215,10 +229,9 @@ func limpiar_debuffs() -> void:
 
 func aplicar_item(tipo: String) -> String:
 	match tipo:
-		"hielo":
+		"botella":
 			enfriar(20.0)
-			freeze_restante = 3.0
-			return "Cubito de Hielo: -20% y termometro congelado 3s"
+			return "Botella de Agua: -20% calor"
 		"aceite":
 			var nb := get_parent()
 			if nb != null and nb.has_method("agregar_tiempo"):
@@ -264,11 +277,11 @@ func cambiar_traje(nuevo: String) -> void:
 	var gs := get_node_or_null("/root/GameState")
 	if gs != null:
 		gs.set("traje_actual", nuevo)
-	if sprite != null:
+	if anim != null:
 		if traje == "criolla":
-			sprite.scale = Vector2(0.45, 0.45)
+			anim.scale = Vector2(0.23, 0.23)
 		else:
-			sprite.scale = Vector2(0.6328125, 0.6328125)
+			anim.scale = Vector2(0.32, 0.32)
 	_aplicar_color_traje()
 	traje_changed.emit(traje)
 
@@ -280,14 +293,14 @@ func _aplicar_color_traje() -> void:
 
 ## 0% = color del traje, 50% = amarillento, 100% = rojo (sin tapar el disfraz).
 func _actualizar_tinte() -> void:
-	if sprite == null:
+	if anim == null:
 		return
 	var f := clampf(temperatura / 100.0, 0.0, 1.0)
 	if f <= 0.5:
-		sprite.modulate = _color_base.lerp(TINTE_AMARILLO, (f * 2.0) * TINTE_AMARILLO_MAX)
+		anim.modulate = _color_base.lerp(TINTE_AMARILLO, (f * 2.0) * TINTE_AMARILLO_MAX)
 	else:
 		var medio := _color_base.lerp(TINTE_AMARILLO, TINTE_AMARILLO_MAX)
-		sprite.modulate = medio.lerp(TINTE_ROJO, (f - 0.5) * 2.0 * TINTE_ROJO_MAX)
+		anim.modulate = medio.lerp(TINTE_ROJO, (f - 0.5) * 2.0 * TINTE_ROJO_MAX)
 
 
 func pincho_tocado(mortal: bool) -> void:
@@ -310,8 +323,8 @@ func _explotar(causa: String) -> void:
 	viva = false
 	velocity = Vector2.ZERO
 	# Explosion visual: oculta la papa y lanza particulas de pure
-	if sprite != null:
-		sprite.visible = false
+	if anim != null:
+		anim.visible = false
 	if explosion_particles != null:
 		explosion_particles.restart()
 	murio.emit(causa)

@@ -64,3 +64,25 @@ Todo cambio de lógica o arquitectura queda registrado aquí.
 - `NivelBase.completar_nivel()`: al tocar la meta avanza solo al siguiente
   nivel a los 1.5 s (timer hijo, seguro ante reintento).
 - Demo: 30 checks (tinte en 0/50/100% + rampa de la barra).
+
+## 2026-10-10 — Assets PNG: animacion, items, tilemap y termometro
+- `papa.tscn`: Sprite2D -> AnimatedSprite2D con SpriteFrames de
+  `assets/papaAnimation.png` (8 frames de 216x274): `caminar` = frames
+  1,2,3,5,6,7,8 a 8 fps en loop, `saltar` = sprite 4. `papa.gd` elige
+  animacion (aire=saltar, moviendose=caminar, quieto=frame 0) y voltea
+  con flip_h. Escala 0.32 (criolla 0.23). Colision del editor intacta.
+- `Items/ItemBotella.tscn` (nuevo, botella azul -20% calor, reemplaza al
+  hielo): se borro `ItemHielo.tscn` y el tipo `hielo` del codigo/tablas/demo.
+  `Items/AguaMeta.tscn` ahora usa el charco del PNG (meta del nivel).
+  `Items/AguaCharco.tscn` borrada (la botella es el item que refresca).
+  Resto de items con su arte del PNG (AtlasTexture por bbox medida).
+  `item.gd` ya no pisa modulate ni crea etiquetas.
+- `assets/TerrenoTileset.tres` generado por `tools/build_tileset.gd`
+  (144 tiles, 108 con colision cuadrada; filas parciales sin colision).
+  `tools/build_niveles.gd` reconstruye Nivel1/Nivel2 con TileMapLayer
+  (suelo pasto/tierra + plataformas grises) en vez de plataformas
+  provisionales. Prueba fisica headless: cuerpo cae y reposa en y=518.3
+  (techo del suelo y=528). Meta reubicada a y=290 (alcanzable).
+- `hud.gd`: ProgressBar -> termometro del `assets/Healthbars.png` (marco
+  azul + columna de mercurio con rampa verde->amarillo->rojo) y % a la derecha.
+- `project.godot`: filtro de texturas canvas a Nearest (pixel-art nitido).

@@ -1,32 +1,22 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dawwaua3naokj"]
 
-[ext_resource type="Script" path="res://Sistemas/agua.gd" id="1_agua"]
-[ext_resource type="Texture2D" uid="uid://b3v8jacaao6x2" path="res://icon.svg" id="1_icon"]
+[ext_resource type="Script" uid="uid://bea6xd0jjoava" path="res://Sistemas/agua.gd" id="1_agua"]
+[ext_resource type="Texture2D" uid="uid://dcccu4yy672pt" path="res://assets/Items.png" id="1_items"]
+
+[sub_resource type="AtlasTexture" id="Art"]
+atlas = ExtResource("1_items")
+region = Rect2(8, 64, 315, 211)
 
 [sub_resource type="CircleShape2D" id="Col"]
 radius = 48.0
 
-[node name="AguaMeta" type="Area2D"]
+[node name="AguaMeta" type="Area2D" unique_id=1570709795]
 script = ExtResource("1_agua")
 es_meta = true
-radio = 48.0
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.2, 1, 0.6, 1)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("1_icon")
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1933817783]
+scale = Vector2(0.3, 0.3)
+texture = SubResource("Art")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1827172761]
 shape = SubResource("Col")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -40.0
-offset_top = -14.0
-offset_right = 40.0
-offset_bottom = 14.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 6
-theme_override_font_sizes/font_size = 24
-text = "META"
-horizontal_alignment = 1
